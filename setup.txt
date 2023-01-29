@@ -1,1 +1,8 @@
 ## setup file for cloning git project_ttds locally
+
+## step 1: git init
+## For step 2 add your gitlan username and email
+## step 2: git config --global user.name "shivazsharma"
+##       : git config --global user.email "shivazsharma94@gmail.com"
+## step 3: git clone https://gitlab.com/uoe3/project_ttds.git
+    
