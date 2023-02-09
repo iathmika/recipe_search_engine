@@ -34,8 +34,9 @@ def index(request):
 #  ## This controller function is invoked when user inputs the query in the search box
    
 def home(request):
-  recieved_var = testing_func("Whats-up")
-  return HttpResponse(recieved_var)
+  return HttpResponse("Hello World!")
+  # recieved_var = testing_func("Whats-up")
+  # return HttpResponse(recieved_var)
 
 def products(request):
   return HttpResponse('products')

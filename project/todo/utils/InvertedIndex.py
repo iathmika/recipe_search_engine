@@ -10,8 +10,12 @@ import time
 import os
 import sys
 import math
+import csv
 from os.path import exists, join
 from pathlib import Path
+
+start = time.time()
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 app_path = Path(__file__).resolve().parent.parent
 print(" app_path name : ", app_path)
@@ -19,6 +23,7 @@ index_file_path = os.path.join(app_path, 'index.txt')
 print(" index file path: ", index_file_path)
 trec_file_path = os.path.join(app_path, 'trec.5000.xml')
 stop_words_file = os.path.join(app_path, 'englishST.txt')
+recipe_file_path = os.path.join(app_path, 'full_dataset.csv') #This file should be there in the folder before running the code
 
 ## Porter stemmer module for efficient stemming while pre-processing
 #from stemming.porter2 import stem
@@ -56,6 +61,7 @@ def build_index_internal(ids, info):
     d = {}
     populateStopWords()
     #Making Inverted Index
+    print('before preprocessing')
     for i in range(len(ids)):
         #Preprocessing the data of the document
         porter = preProcessing(info[i])
@@ -83,10 +89,12 @@ def build_index_internal(ids, info):
                 #It means it's not the first time the word is seen in that docID
                 else:
                     d[word].details[document_id].append(j+1)
+    print('Dictionary populated')
 
     #Sorting the inverted index on basis of lexicographical orders of terms
     sorted_dict = dict(sorted(d.items(),key = lambda item: item[0]))
    
+    print('Before writing in a file')
     #Storing the inverted index in memory
     with open(index_file_path, 'w') as file_obj:
         #Iterating word by word in the dictionary
@@ -108,6 +116,7 @@ def build_index_internal(ids, info):
                         file_obj.write(str(inner_sort[num][position])) #Last position so won't have comma at the end
                 file_obj.write('\n')
 
+    print('After Writing in a File')
     return sorted_dict
 
 def getInvertedIndexObj():
@@ -140,24 +149,42 @@ class InvertedIndex:
 
   def buildIndex(self):
     #Shivaz: Need to modify the parsing based on new recipe dataset 
+    #Radhikesh: Commented the trec data and reading the data from recipe dataset
 
-    #Reading the xml file
-    with open(trec_file_path) as file_obj:
-      data = file_obj.read()
+    # #Reading the xml file
+    # with open(trec_file_path) as file_obj:
+    #   data = file_obj.read()
 
-    #Parsing the xml file
-    soup = BeautifulSoup(data,'lxml')
-    doc_id = soup.find_all('docno') #Getting the document ids
-    headline = soup.find_all('headline') #Getting the headline tags
-    text = soup.find_all('text') #Getting the text tags
-    #Storing all the document ids and the data (Headline + Text)
+    # #Parsing the xml file
+    # soup = BeautifulSoup(data,'lxml')
+    # doc_id = soup.find_all('docno') #Getting the document ids
+    # headline = soup.find_all('headline') #Getting the headline tags
+    # text = soup.find_all('text') #Getting the text tags
+    # #Storing all the document ids and the data (Headline + Text)
+
     ids = []
     info = []
-    for i in range(len(doc_id)):
-      ids.append(int(doc_id[i].string))
-      info.append(str(headline[i].string + text[i].string))
- 
+
+    # for i in range(len(doc_id)):
+    #   ids.append(int(doc_id[i].string))
+    #   info.append(str(headline[i].string + text[i].string))
+
+    doc_id = 1
+    with open(recipe_file_path, 'r', encoding="utf-8") as csv_file:
+      next(csv_file)
+      csv_reader = csv.reader(csv_file, delimiter=',')
+      for row in csv_reader:
+          doc_data = row[1] + " " + row[2] + " " + row[3] + " " + row[6]
+          ids.append(doc_id)
+          info.append(doc_data)
+          doc_id += 1
+
+          #Can put the number of documents to be populated in the idex.txt file
+          if(doc_id == 501): #Populating first 500 documents
+            break
+    print('Before Build')
     self.dictdata = build_index_internal(ids, info)
+    print('After Build')
 
   def loadIndexInMemory(self):
     print ("Getting a call here ")
@@ -194,7 +221,8 @@ print ("Shivaz !!!")
 s = InvertedIndex.getInstance()
 
 s.getIndexSize()
-#s.buildIndex()
+s.buildIndex()
 s.loadIndexInMemory()
 s.getIndexSize()
 
+print('It took', time.time()-start, 'seconds to do all the process')
