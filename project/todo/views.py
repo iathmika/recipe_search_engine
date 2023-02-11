@@ -1,25 +1,27 @@
 from django.shortcuts import render
-from .serializers import TodoSerializer 
 from rest_framework import viewsets      
-from .models import Todo           
 from django.http import HttpResponse
 from django.template import loader
 from .utils import InvertedIndex
+import os
 from os.path import exists
+from pathlib import Path
+
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
+app_path = Path(__file__).resolve().parent
+index_file_path = os.path.join(app_path, 'index.txt')
+print ("Index file path :" + index_file_path)
 
 ## Create an index of inverted index when search engine is intialized
 indexObj = InvertedIndex.getInvertedIndexObj()
-
-class TodoView(viewsets.ModelViewSet):
-  serializer_class = TodoSerializer   
-  queryset = Todo.objects.all()
 
 def index(request):
   ## Need to create landing page to show the user
   #template = loader.get_template('landing.html')
   
   ## Important step Check if index.txt exists or not, if not need to create one
-  if (not exists('index.txt')):
+  if (not exists(index_file_path)):
+    print ("Getting call here incorrectly")
     indexObj.buildIndex()
 
   ## Step 2: Load index in memory for searching query results

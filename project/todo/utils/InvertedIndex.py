@@ -217,12 +217,12 @@ class InvertedIndex:
 ##s = InvertedIndex()
 ##print(s)
 #
-print ("Shivaz !!!")
-s = InvertedIndex.getInstance()
+#print ("Shivaz !!!")
+#s = InvertedIndex.getInstance()
 
-s.getIndexSize()
-s.buildIndex()
-s.loadIndexInMemory()
-s.getIndexSize()
+#s.getIndexSize()
+#s.buildIndex()
+#s.loadIndexInMemory()
+#s.getIndexSize()
 
 print('It took', time.time()-start, 'seconds to do all the process')
