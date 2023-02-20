@@ -147,6 +147,9 @@ class InvertedIndex:
     print("Dictionary size: ", len(self.dictdata))
     return len(self.dictdata)
 
+  def getIndexDict(self):
+    return self.dictdata
+
   def buildIndex(self):
     #Shivaz: Need to modify the parsing based on new recipe dataset 
     #Radhikesh: Commented the trec data and reading the data from recipe dataset
@@ -185,7 +188,7 @@ class InvertedIndex:
     print('Before Build')
     self.dictdata = build_index_internal(ids, info)
     print('After Build')
-
+  
   def loadIndexInMemory(self):
     print ("Getting a call here ")
     data = []

@@ -5,8 +5,9 @@ from django.urls import path
 from todo import views
 
 urlpatterns = [
-    path('', views.home),
-    path('products/', views.products),
-    path('customer/', views.customer),
-    path('index/', views.index),
+    path('', views.RecipeSearch.home),
+    path('products/', views.RecipeSearch.products),
+    path('customer/', views.RecipeSearch.customer),
+    path('index/', views.RecipeSearch.index, name='landing'),
+    path('search/', views.RecipeSearch.searchQueryResult, name='search_result'),
 ]
