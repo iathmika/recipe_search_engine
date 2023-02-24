@@ -1,54 +1,44 @@
-import React, { Component } from "react"
+import { BrowserRouter as Router, Link } from "react-router-dom";
+import styled from "styled-components";
+import { GiKnifeFork } from "react-icons/gi";
+import Category from "./templates/Category";
+import Pages from "./templates/Pages";
+import Search from "./templates/Search";
 
-const todoItems = [
-  {
-    id: 1,
-    title: "Nature walk in the park",
-    description: "Visit the park with my friends",
-    completed: true
-  },
+function App() {
+  return (
+    <div className="App">
+      <Router>
+        <Nav>
+          <GiKnifeFork />
+          <Logo to="/">Recipe Search </Logo>
+         </Nav>
+         <Search />
+         <Category />
+         <Pages />
+      </Router>
+    </div>
+  );
+}
 
-  {
-    id: 2,
-    title: "Visit",
-    description: "Got to my aunt's place",
-    completed: true
-  },
+const Logo = styled(Link)`
+  text-decoration: none;
+  font-size: 1.5rem;
+  font-weight: 400;
+  font-family: "Consolas", sans-serif;
+  padding-left: 1rem;
+`;
 
-  {
-    id: 3,
-    title: "Write",
-    description: "Do an article about anthropology",
-    completed: true
-  },
-];
+const Nav = styled.div`
+  padding: 3rem 0;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
 
-class App extends Component {
-    constructor(props) {
-      super(props);
-      this.state = {todoItems};
-    };
-
-    render() {
-      return (
-        <main className="content">
-        <div className="row">
-          <div className="col-md-6 col-sm-10 mx-auto p-0">
-            <div className="card p-3">
-              <ul className="list-group list-group-flush">
-              {this.state.todoItems.map(item => (
-              <div>
-                <h1>{item.title}</h1>
-                <span>{item.description}</span>
-              </div>
-              ))}
-              </ul>
-            </div>
-          </div>
-        </div>
-      </main>
-      )
-    }
+  svg {
+    color: var(--gray-600);
+    font-size: 2rem;
   }
-  
+`;
+
 export default App;
