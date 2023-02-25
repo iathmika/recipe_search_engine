@@ -7,11 +7,14 @@ function Searched() {
 	let params = useParams();
 
 	const getSearched = async name => {
-		const data = await fetch(
-			`https://api.spoonacular.com/recipes/complexSearch?apiKey=${process.env.REACT_APP_API_KEY}&query=${name}`
+		console.log("NAME");
+		console.log(name);
+		
+		const data = await fetch(			
+		    `http://localhost:8000/search/?query=${name}`
 		);
-		const recipes = await data.json();
-		setSearchedRecipes(recipes.results);
+		//const recipes = await data.json();
+		setSearchedRecipes(data);		
 	};
 
 	useEffect(() => {
@@ -19,7 +22,11 @@ function Searched() {
 	}, [params.search]);
 
 	return (
+		<Grid> </Grid>
+		/*
+
 		<Grid>
+		
 			{searchedRecipes.map(recipe => {
 				return (
 					<Link to={`/recipe/${recipe.id}`}>
@@ -31,6 +38,7 @@ function Searched() {
 				);
 			})}
 		</Grid>
+		*/
 	);
 }
 const Grid = styled.div`

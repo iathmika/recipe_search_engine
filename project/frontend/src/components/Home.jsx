@@ -1,5 +1,5 @@
-import Veggie from '../templates/Veggie';
-import Popular from '../templates/Popular';
+import Veggie from './Veggie';
+import Popular from './Popular';
 import { motion } from 'framer-motion';
 
 import React from 'react';

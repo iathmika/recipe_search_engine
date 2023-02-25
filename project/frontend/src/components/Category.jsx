@@ -6,21 +6,15 @@ import { NavLink } from "react-router-dom";
 function Category() {
   return (
     <List>
-      <SLink to="/cuisine/Italian">
-        <FaPizzaSlice />
-        <h4>Italian</h4>
-      </SLink>
-      <SLink to="/cuisine/American">
-        <FaHamburger />
-        <h4>American</h4>
-      </SLink>
+      
+    
       <SLink to="/cuisine/Thai">
         <GiNoodles />
-        <h4>Thai</h4>
+        <h4>By title</h4>
       </SLink>
       <SLink to="/cuisine/Japanese">
         <GiChopsticks />
-        <h4>Japanese</h4>
+        <h4>By Category</h4>
       </SLink>
     </List>
   );
@@ -31,7 +25,7 @@ const List = styled.div`
   justify-content: center;
   margin: 2rem 0;
 
-  @media (max-width: 768px) {
+  @media (max-width: 600px) {
     margin: 1rem 0;
   }
 `;
