@@ -4,6 +4,8 @@ from django.http import HttpResponse
 from django.template import loader
 from .utils import InvertedIndex
 from .utils import RankSearch
+from .utils import BooleanSearch
+from .models import RecipeData
 import os
 from os.path import exists
 from pathlib import Path
@@ -37,15 +39,22 @@ class RecipeSearch:
     print ("Request method :", request.method)
     indexObj = InvertedIndex.getInvertedIndexObj()
     # There should be an assert that index is all ready loaded when we get a call in this search controller
-    #indexObj.loadIndexInMemory()
+    indexObj.loadIndexInMemory()
     ## This controller function is invoked when user inputs the query in the search box
     query = request.GET.get("query")
     print(query)
-    rsl = RankSearch.processRankedQuery(query, indexObj)
+    flag = 1
+    if(flag):
+      rsl = RankSearch.processRankedQuery(query, indexObj)
+    else:
+      rsl = BooleanSearch.boolean_search(query,indexObj)
     output_str = "::::: Retreived Document IDs :::::: \n"
     if rsl != None:
-      for did in rsl.keys():
-        output_str += str(did) + "\n"
+      for did in rsl:
+      # for did in rsl.keys():
+        recipe_data = RecipeData.getInstance()
+        title = recipe_data.get_recipe_fields(did)[0]
+        output_str += str(did) + title + "\n"
     else:
       print ("Sorry! No search results found")
     return HttpResponse(output_str) 
