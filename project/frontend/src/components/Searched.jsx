@@ -13,8 +13,16 @@ function Searched() {
 		const data = await fetch(			
 		    `http://localhost:8000/search/?query=${name}`
 		);
-		//const recipes = await data.json();
-		setSearchedRecipes(data);		
+		const recipes = await data.json();
+		console.log("recipes: ",recipes);
+		try {
+		setSearchedRecipes(recipes.results);
+		}
+		catch(err){
+			console.log("caught err: ",err)
+		}
+		console.log("after")
+		console.log("searched recipes: ",searchedRecipes);		
 	};
 
 	useEffect(() => {
@@ -22,23 +30,25 @@ function Searched() {
 	}, [params.search]);
 
 	return (
-		<Grid> </Grid>
-		/*
+	
+		
 
 		<Grid>
 		
 			{searchedRecipes.map(recipe => {
 				return (
 					<Link to={`/recipe/${recipe.id}`}>
-						<Card key={recipe.id}>
-							<img src={recipe.image} alt={recipe.title} />
-							<h4>{recipe.title}</h4>
+						<Card key={recipe.title}>
+							<h3> {recipe.title} </h3>
+							<h4> {recipe.ingredients} </h4>
+							<h5>{recipe.directions}</h5>
 						</Card>
 					</Link>
 				);
 			})}
 		</Grid>
-		*/
+		
+		
 	);
 }
 const Grid = styled.div`
