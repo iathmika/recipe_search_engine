@@ -1,4 +1,5 @@
 from pymongo import MongoClient
+import pandas as pd
 
 class RecipeData:
     _instance = None
@@ -87,10 +88,20 @@ if __name__ == "__main__":
    
 
       recipe_data = RecipeData.getInstance()
-      recipes = recipe_data.get_recipe_by_title("No-Bake Nut Cookies")
-      recipes_2 = recipe_data.get_recipe_by_id("10")
-      print(recipes)
-      print("recipes_2: ",recipes_2)
+      # recipe_data._collection.drop()
+    
+    #Added on 25/02/2022 by Radhikesh
+    #For first time mongo setup uncomment the lines below to insert data into database
+
+    #   data = pd.read_csv('./utils/full_dataset.csv')
+    #   counter = 1
+    #   for i in data.index:
+    #     recipe_data._collection.insert_one({"id": counter, "title": data['title'][i], "ingredients": data['ingredients'][i], "directions": data['directions'][i], "link": data['link'][i], "source": data['source'][i], "NER": data['NER'][i]})
+    #     counter += 1
+    #   recipes = recipe_data.get_recipe_by_title("No-Bake Nut Cookies")
+    #   recipes_2 = recipe_data.get_recipe_by_id("10")
+    #   print(recipes)
+    #   print("recipes_2: ",recipes_2)
         #recipes = recipe_data.search_recipes(2)
         #query_result = list(recipes)
         #for result in query_result:
