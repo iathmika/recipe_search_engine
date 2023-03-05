@@ -3,7 +3,7 @@
 ## InvertedIndex: class contains the information about the index.txt
 
 ## Import desired modules for efficient and robust code implementation
-from bs4 import BeautifulSoup 
+from bs4 import BeautifulSoup
 import re
 #from stemming.porter2 import stem
 import time
@@ -11,6 +11,7 @@ import os
 import sys
 import math
 import csv
+import json
 from os.path import exists, join
 from pathlib import Path
 
@@ -24,6 +25,8 @@ print(" index file path: ", index_file_path)
 trec_file_path = os.path.join(app_path, 'trec.5000.xml')
 stop_words_file = os.path.join(app_path, 'englishST.txt')
 recipe_file_path = os.path.join(app_path, 'full_dataset.csv') #This file should be there in the folder before running the code
+#recipe_file_path = os.path.join(app_path, 'sample_data.csv') #This file should be there in the folder before running the code
+doc_len_file = os.path.join(app_path, 'docLenFile.json')
 
 ## Porter stemmer module for efficient stemming while pre-processing
 #from stemming.porter2 import stem
@@ -142,6 +145,7 @@ class InvertedIndex:
     else:
       InvertedIndex.__instance = self
       self.dictdata = {}
+      self.docLenDict = {}
 
   def getIndexSize(self):
     print("Dictionary size: ", len(self.dictdata))
@@ -150,6 +154,31 @@ class InvertedIndex:
   def getIndexDict(self):
     return self.dictdata
 
+  def getDocLenSize(self):
+    return len(self.docLenDict)
+  
+  def getDocLenDict(self):
+    return self.docLenDict
+
+  def buildDocLenDict(self):
+    doc_len_dict = {}
+    doc_id = 1
+    with open(recipe_file_path, 'r', encoding="utf-8") as csv_file:
+      next(csv_file)
+      csv_reader = csv.reader(csv_file, delimiter=',')
+      for row in csv_reader:
+        doc_data = preProcessing(row[1] + " " + row[2])
+        doc_len = len(doc_data)
+        doc_len_dict[int(doc_id)] = int(doc_len)
+        if ((doc_id % 100000) == 0):
+          print("Doc_id cnt : ", doc_id)
+        doc_id += 1
+   
+    json_data = json.dumps(doc_len_dict);
+    with open(doc_len_file,'w') as f:
+      f.write(json_data)
+    self.docLenDict = doc_len_dict
+ 
   def buildIndex(self):
     #Shivaz: Need to modify the parsing based on new recipe dataset 
     #Radhikesh: Commented the trec data and reading the data from recipe dataset
@@ -188,7 +217,15 @@ class InvertedIndex:
     print('Before Build')
     self.dictdata = build_index_internal(ids, info)
     print('After Build')
-  
+ 
+  def loadDocLenDictInMemory(self):
+    print ("Getting a call here !!!")
+    with open(doc_len_file, 'rb') as f:
+      self.docLenDict = json.loads(f.read())
+
+      assert(len(self.docLenDict) > 0)
+      print ("Dict size: ", len(self.docLenDict))
+ 
   def loadIndexInMemory(self):
     print ("Getting a call here ")
     data = []
@@ -216,6 +253,15 @@ class InvertedIndex:
           d[curr_word].details[int(info[1])] = positions #Storing docID and positions for that word in the dictionary
     
     self.dictdata = d
+    
+  def computeAvgDocLen(self):
+    avg_dl = 0
+    sum = 0
+    total_docs = self.getDocLenSize()
+    if (len(self.docLenDict) > 0):
+      for cnt in self.docLenDict.values():
+        sum += cnt
+    return int(sum/total_docs)
 
 ##s = InvertedIndex()
 ##print(s)
@@ -227,5 +273,11 @@ class InvertedIndex:
 #s.buildIndex()
 #s.loadIndexInMemory()
 #s.getIndexSize()
+#s = InvertedIndex.getInstance()
+#s.buildDocLenDict()
+#s.loadDocLenDictInMemory()
+#print (s.computeAvgDocLen())
 
-print('It took', time.time()-start, 'seconds to do all the process')
+#sample_dict = s.getDocLenDict()
+
+print ('It took', time.time()-start, 'seconds to do all the process')

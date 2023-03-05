@@ -15,6 +15,12 @@ app_path = Path(__file__).resolve().parent
 index_file_path = os.path.join(app_path, 'index.txt')
 print ("Index file path :" + index_file_path)
 
+## By default TFIDF technique is used ##
+## 1 -> tfidf
+## 2 -> bm25
+## (!1 && !2) -> Boolean, Proximity, Phrase
+search_type = "tfidf" 
+
 class RecipeSearch:
   indexObj = None 
   def index(request):
@@ -30,7 +36,10 @@ class RecipeSearch:
     ## Step 2: Load index in memory for searching query results
     indexObj.loadIndexInMemory()
     print ("Loaded dictionary size: ", indexObj.getIndexSize())
-    #return HttpResponse(template.render())
+
+    indexObj.loadDocLenDictInMemory()
+    print ("Loaded document len dictionary size: ", indexObj.getDocLenDict())
+
     indx_size = str(indexObj.getIndexSize())
     print(" indx_size : ", indx_size)
     return HttpResponse(template.render())
@@ -43,15 +52,15 @@ class RecipeSearch:
     ## This controller function is invoked when user inputs the query in the search box
     query = request.GET.get("query")
     print(query)
-    flag = 1
-    if(flag):
-      rsl = RankSearch.processRankedQuery(query, indexObj)
-    else:
-      rsl = BooleanSearch.boolean_search(query,indexObj)
+    if (search_type == "tfidf"):
+      rsl = RankSearch.rankByTFIDF(query, indexObj)
+    elif (search_type == "bm25"):
+      rsl = RankSearch.rankByBM25(query, indexObj)
+    elif (search_type == "other"):
+      rsl = BooleanSearch.boolean_search(query, indexObj)
     output_str = "::::: Retreived Document IDs :::::: \n"
     if rsl != None:
-      for did in rsl:
-      # for did in rsl.keys():
+      for did in rsl.keys():
         recipe_data = RecipeData.getInstance()
         title = recipe_data.get_recipe_fields(did)[0]
         output_str += str(did) + title + "\n"

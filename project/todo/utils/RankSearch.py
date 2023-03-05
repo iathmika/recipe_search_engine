@@ -62,11 +62,15 @@ def fetchDocIds(term, is_negation, index_dict):
 
 # ****END: Some basic utils for avoiding code replication **** #
 
-## Method for computing the TFIDF score for a query with respect to a document id
-## Results are written out in a file, sorted by score
-#def processRankedQuery(query, fout):
-def processRankedQuery(query, indexObj):
+## Method for computing the TFIDF and BM25 score for a query with respect to a document id
+## Results are sorted in descending order of the score
+def processRankedQuery(query, indexObj, type):
   index_dict = indexObj.getIndexDict()
+  ## Required for bm25 
+  if (type == 0): 
+    doc_len_dict = indexObj.getDocLenDict()
+    docs_cnt = indexObj.getDocLenSize()
+
   print ("Getting call in index_dict")
   print ("Length of dictionary ", len(index_dict))
   terms_list = preProcessing(query)
@@ -81,7 +85,13 @@ def processRankedQuery(query, indexObj):
           if dft > 0:
               for doc_id in tmp:
                   tfd = getTermFreqInDoc(term, doc_id, index_dict)
-                  new_score = (1 + math.log10(tfd)) * math.log10(5000/dft)
+                  if (type == 1):
+                    ## Compute TFIDF score
+                    new_score = (1 + math.log10(tfd)) * math.log10(5000/dft)
+                  else:
+                    ## Compute score for BM25
+                    if str(doc_id) in doc_len_dict.keys():
+                      new_score  = score_BM25(docs_cnt , dft, tfd, 1.5, doc_len_dict[str(doc_id)], 48)
                   cur_score = 0
                   if doc_id in rsl:
                       cur_score = rsl[doc_id]
@@ -96,5 +106,19 @@ def processRankedQuery(query, indexObj):
     #    cnt += 1
 
     return sorted_dict
-   
 
+def score_BM25(doc_nums, doc_nums_term, term_freq, k1, dl, avgdl):
+    K = compute_K(k1, dl, avgdl)
+    idf_param = math.log( (doc_nums-doc_nums_term+0.5) / (doc_nums_term+0.5) )
+    next_param = (term_freq) / (K + term_freq + 0.5)
+    return float("{0:.4f}".format(next_param * idf_param))
+
+def compute_K(k1, dl, avgdl):
+    return k1 * dl / avgdl
+
+def rankByTFIDF(query, indexObj):
+    return processRankedQuery(query, indexObj, 1)
+
+def rankByBM25(query, indexObj):
+    return processRankedQuery(query, indexObj, 0)
+  
