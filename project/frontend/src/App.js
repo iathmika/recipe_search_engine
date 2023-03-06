@@ -8,23 +8,26 @@ import Search from "./components/Search";
 import Loader from "./components/Loader";
 import Pages from "./components/Pages"
 import Category from "./components/Category"
+import "./index.css"
 
 
 
 function App() {
   return (
     <div className="App">
-      <Router>
-        <Nav>
+      <Router >
+        
           <GiKnifeFork />
           <Logo to="/">Recipe Search </Logo>
          
-         <Search />
-         <Category />
+          <Nav> <Search /></Nav>
+                
+         <br/> <Category /> 
+         
          <Pages />
           
           
-          </Nav>
+         
       </Router>
     </div>
   );
@@ -32,21 +35,28 @@ function App() {
 
 
 const Logo = styled(Link)`
-position: relative;
+
+
+position: relative; 
+display: flex;
 text-decoration: none;
-font-size: 2.5rem;
+text-align: center;
+justify-content: center;
+align-items: center;
+font-size: 5.5rem;
 font-weight: 400;
 font-family: "Consolas", sans-serif;
 padding-left: 2rem;
+color: gray;
 
   
 `;
 
 const Nav = styled.div`
-  background-image: url("https://c1.wallpaperflare.com/preview/955/330/329/bright-colors-cream-creamy.jpg");
+  
   background-repeat: no-repeat;
   background-size: cover;
-  padding: 20rem 0;
+  padding: 10rem 0;
   display: flex;
   justify-content: flex-start;
   align-items: center;

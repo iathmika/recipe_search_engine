@@ -3,6 +3,9 @@ import { FaSearch } from "react-icons/fa";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import image from "../images/bg.jpeg";
+import Button from "./Button"
+import React from "react";
+//import { MDBBtn } from 'mdb-react-ui-kit';
 function Search() {
   const [input, setInput] = useState("");
 
@@ -16,7 +19,7 @@ function Search() {
     console.log(e);
   };
 
-  return (
+  /* return (
     <FormStyle onSubmit={submitHandler}>
       <div>
         <FaSearch />
@@ -25,11 +28,39 @@ function Search() {
           value={input}
           onChange={(e) => setInput(e.target.value)}
         />
+        
+      
+  
       </div>
+      
+      <Button text="Search" onClick={submitHandler} />  
     </FormStyle>
-  );
-}
 
+    
+  );
+*/
+  return (
+   
+      <FormStyle onSubmit={submitHandler}>
+     
+    
+        <FaSearch />
+        <input
+          type="text"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+        /> 
+  
+    
+         <Button text="Search" onClick={submitHandler} />
+        
+        
+    </FormStyle> 
+ 
+
+  )
+}
+//
 const FormStyle = styled.form`
   position: relative;
   width: 100%;
@@ -44,20 +75,23 @@ const FormStyle = styled.form`
   width: 100%;
   width: 100%;
   display: flex;
+  
   justify-content: center;
   align-items: center;
 
+  
+
   div {
+    align-items: center;
     position: relative;
     width: 100%;
-  
-    max-width: 100%;
-    display: flex;
+    display: block;
     justify-content: center;
-    align-items: center;
+
   }
 
   input {
+   
     border: none;
     background: linear-gradient(35deg, #494949, #313131);
     font-size: 2rem;
@@ -65,16 +99,18 @@ const FormStyle = styled.form`
     padding: 1rem 3rem;
     border-radius: 1rem;
     outline: none;
+    height: 80%;
     width: 80%;
-    opacity: 0.33;
+    opacity: 0.35;
+    
   }
 
   svg {
-    position: absolute;
+    position: relative;
     top: 50%;
-    left: 5% ;
-    transform: translate(50%, -50%);
-    color: white;
+    left: 3% ;
+    transform: translate(0%, 0%);
+    color: black;
     
   }
 `;
