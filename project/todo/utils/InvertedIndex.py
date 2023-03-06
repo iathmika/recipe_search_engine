@@ -148,7 +148,6 @@ class InvertedIndex:
       self.docLenDict = {}
 
   def getIndexSize(self):
-    print("Dictionary size: ", len(self.dictdata))
     return len(self.dictdata)
 
   def getIndexDict(self):
@@ -170,8 +169,8 @@ class InvertedIndex:
         doc_data = preProcessing(row[1] + " " + row[2])
         doc_len = len(doc_data)
         doc_len_dict[int(doc_id)] = int(doc_len)
-        if ((doc_id % 100000) == 0):
-          print("Doc_id cnt : ", doc_id)
+        #if ((doc_id % 100000) == 0):
+          #print("Doc_id cnt : ", doc_id)
         doc_id += 1
    
     json_data = json.dumps(doc_len_dict);
@@ -219,15 +218,11 @@ class InvertedIndex:
     print('After Build')
  
   def loadDocLenDictInMemory(self):
-    print ("Getting a call here !!!")
     with open(doc_len_file, 'rb') as f:
       self.docLenDict = json.loads(f.read())
-
       assert(len(self.docLenDict) > 0)
-      print ("Dict size: ", len(self.docLenDict))
  
   def loadIndexInMemory(self):
-    print ("Getting a call here ")
     data = []
     #Fetch data from index file 
     with open(index_file_path, 'r') as f:
@@ -262,12 +257,6 @@ class InvertedIndex:
       for cnt in self.docLenDict.values():
         sum += cnt
     return int(sum/total_docs)
-
-##s = InvertedIndex()
-##print(s)
-#
-#print ("Shivaz !!!")
-#s = InvertedIndex.getInstance()
 
 #s.getIndexSize()
 #s.buildIndex()

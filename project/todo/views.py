@@ -19,47 +19,63 @@ print ("Index file path :" + index_file_path)
 ## 1 -> tfidf
 ## 2 -> bm25
 ## (!1 && !2) -> Boolean, Proximity, Phrase
-search_type = "tfidf" 
+search_type = "tfidf"
 
 class RecipeSearch:
-  indexObj = None 
+  indexObj = None
+  __instance = None
+  @staticmethod
+  def isInstanceEmpty():
+    return (RecipeSearch.__instance == None)
+  
+  @staticmethod
+  def getInstance():
+    """ Static access method. """
+    if RecipeSearch.__instance == None:
+      print ("Printing new instance of RecipeSearch !!")
+      RecipeSearch()
+    return RecipeSearch.__instance
+
+  @staticmethod
+  def getRecipeIndexObj():
+    return RecipeSearch.__instance.indexObj
+  
+  def __init__(self):
+    """ Virtually private constructor. """
+    if RecipeSearch.__instance != None:
+      raise Exception("This class is a singleton!")
+    else:
+      RecipeSearch.__instance = self
+      RecipeSearch.indexObj = None
+      
   def index(request):
-    indexObj = InvertedIndex.getInvertedIndexObj()
     ## Need to create landing page to show the user
     template = loader.get_template('landing.html')
+    index_obj = RecipeSearch.getInstance().getRecipeIndexObj()
     
-    ## Important step Check if index.txt exists or not, if not need to create one
-    if (not exists(index_file_path)):
-      print ("Getting call here incorrectly")
-      indexObj.buildIndex()
-  
-    ## Step 2: Load index in memory for searching query results
-    indexObj.loadIndexInMemory()
-    print ("Loaded dictionary size: ", indexObj.getIndexSize())
-
-    indexObj.loadDocLenDictInMemory()
-    print ("Loaded document len dictionary size: ", indexObj.getDocLenDict())
-
-    indx_size = str(indexObj.getIndexSize())
+    index_obj.loadDocLenDictInMemory()
+    #print ("Loaded document len dictionary size: ", indexObj.getDocLenDict())
+    
+    indx_size = str(index_obj.getIndexSize())
     print(" indx_size : ", indx_size)
     return HttpResponse(template.render())
   
   def searchQueryResult(request):
     print ("Request method :", request.method)
-    indexObj = InvertedIndex.getInvertedIndexObj()
-    # There should be an assert that index is all ready loaded when we get a call in this search controller
-    indexObj.loadIndexInMemory()
-    ## This controller function is invoked when user inputs the query in the search box
     query = request.GET.get("query")
     print(query)
+    index_obj = RecipeSearch.getInstance().getRecipeIndexObj()
     if (search_type == "tfidf"):
-      rsl = RankSearch.rankByTFIDF(query, indexObj)
+      rsl = RankSearch.rankByTFIDF(query, index_obj)
     elif (search_type == "bm25"):
-      rsl = RankSearch.rankByBM25(query, indexObj)
+      rsl = RankSearch.rankByBM25(query, index_obj)
     elif (search_type == "other"):
-      rsl = BooleanSearch.boolean_search(query, indexObj)
+      rsl = BooleanSearch.boolean_search(query, index_obj)
     output_str = "::::: Retreived Document IDs :::::: \n"
     if rsl != None:
+      ## Shivaz: Need for testing
+      #for did in rsl.keys():
+      #  output_str += str(did) + "\n"
       for did in rsl.keys():
         recipe_data = RecipeData.getInstance()
         title = recipe_data.get_recipe_fields(did)[0]
@@ -78,4 +94,17 @@ class RecipeSearch:
   
   def customer(request):
     return HttpResponse('customer')
- 
+
+
+if (RecipeSearch.isInstanceEmpty()):
+  recipe_obj = RecipeSearch.getInstance()
+  recipe_obj.indexObj = InvertedIndex.getInvertedIndexObj()
+  ## Important step Check if index.txt exists or not, if not need to create one
+  if (not exists(index_file_path)):
+    print ("Getting call here incorrectly")
+    recipe_obj.indexObj.buildIndex()
+
+  ## Step 2: Load index in memory for searching query results
+  recipe_obj.indexObj.loadIndexInMemory()
+  
+

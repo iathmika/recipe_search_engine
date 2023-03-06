@@ -44,12 +44,9 @@ def fetchAllDocIds(index_dict):
 # If negation = false -> Return (Set of document ids where term is present)
 # If negation = true  -> Return ((Set of all document ids) - (Set of document ids where term is present))
 def fetchDocIds(term, is_negation, index_dict):
-    print ("Getting call in fetchDocIds, dict length ", len(index_dict))
     rsl = SortedSet()
     if term in index_dict:
-        print ("Term found in index_dict")
         vpair = index_dict[term]
-        print (vpair.details)
         for d in vpair.details.keys():
             rsl.add(int(d))
 
@@ -71,7 +68,6 @@ def processRankedQuery(query, indexObj, type):
     doc_len_dict = indexObj.getDocLenDict()
     docs_cnt = indexObj.getDocLenSize()
 
-  print ("Getting call in index_dict")
   print ("Length of dictionary ", len(index_dict))
   terms_list = preProcessing(query)
   print(terms_list)
@@ -80,7 +76,6 @@ def processRankedQuery(query, indexObj, type):
   if (len(terms_list) > 0):
       for term in terms_list:
           tmp = fetchDocIds(term, False, index_dict)
-          print(tmp)
           dft = len(tmp)
           if dft > 0:
               for doc_id in tmp:
