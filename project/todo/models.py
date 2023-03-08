@@ -30,6 +30,11 @@ class RecipeData:
         source = recipe.get("source")
         NER = recipe.get("NER")
         return (title, ingredients, directions, link, source, NER)
+    
+    #Getting multiple recipes
+    def get_multiple_recipes(self, recipe_ids):
+        recipe = self._collection.find({"id": { "$in": recipe_ids }})
+        return recipe
 
     def update_recipe(self, recipe_id, title=None, ingredients=None, directions=None, link=None, source=None, NER=None):
         recipe = self._collection.find_one({"id": recipe_id})

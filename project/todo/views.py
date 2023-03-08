@@ -9,10 +9,11 @@ from .models import RecipeData
 import os
 from os.path import exists
 from pathlib import Path
+import time
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 app_path = Path(__file__).resolve().parent
-index_file_path = os.path.join(app_path, 'index.txt')
+index_file_path = os.path.join(app_path, 'sample_index.json')
 print ("Index file path :" + index_file_path)
 
 ## By default TFIDF technique is used ##
@@ -65,6 +66,7 @@ class RecipeSearch:
     query = request.GET.get("query")
     print(query)
     index_obj = RecipeSearch.getInstance().getRecipeIndexObj()
+    start = time.time()
     if (search_type == "tfidf"):
       rsl = RankSearch.rankByTFIDF(query, index_obj)
     elif (search_type == "bm25"):
@@ -73,15 +75,22 @@ class RecipeSearch:
       rsl = BooleanSearch.boolean_search(query, index_obj)
     output_str = "::::: Retreived Document IDs :::::: \n"
     if rsl != None:
+      recipe_data = RecipeData.getInstance()
+      #If using Mongo DB fetch data
+      # recipes = recipe_data.get_multiple_recipes(list(rsl.keys()))
+      # output_str = ""
+      # for data in recipes:
+      #   output_str += str(data['id']) + data['title'] + data['ingredients'] + data['directions']
       ## Shivaz: Need for testing
-      #for did in rsl.keys():
-      #  output_str += str(did) + "\n"
       for did in rsl.keys():
-        recipe_data = RecipeData.getInstance()
-        title = recipe_data.get_recipe_fields(did)[0]
-        output_str += str(did) + title + "\n"
+        #Single MongoDB calls not efficient
+        # title = recipe_data.get_recipe_fields(did)[0]
+        # output_str += str(did) + title + "\n"
+        output_str += str(did) + "\n"
+
     else:
       print ("Sorry! No search results found")
+    print("Time taken for tfidf search: ", time.time() - start)
     return HttpResponse(output_str) 
    
   def home(request):
@@ -105,6 +114,8 @@ if (RecipeSearch.isInstanceEmpty()):
     recipe_obj.indexObj.buildIndex()
 
   ## Step 2: Load index in memory for searching query results
+  start = time.time()
   recipe_obj.indexObj.loadIndexInMemory()
+  print("Time taken to load dictionary: ", time.time() - start)
   
 

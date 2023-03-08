@@ -20,7 +20,7 @@ start = time.time()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 app_path = Path(__file__).resolve().parent.parent
 print(" app_path name : ", app_path)
-index_file_path = os.path.join(app_path, 'index.txt')
+index_file_path = os.path.join(app_path, 'sample_index.json')
 print(" index file path: ", index_file_path)
 trec_file_path = os.path.join(app_path, 'trec.5000.xml')
 stop_words_file = os.path.join(app_path, 'englishST.txt')
@@ -223,30 +223,21 @@ class InvertedIndex:
       assert(len(self.docLenDict) > 0)
  
   def loadIndexInMemory(self):
-    data = []
-    #Fetch data from index file 
+    print('Getting a call here')
+    populateStopWords()
+    #Using json file now
     with open(index_file_path, 'r') as f:
-      data = f.readlines()
-    d = {}
-    curr_word = ''
-    #Parsing the index file by iterating line by line
-    for line in data:
-      line = line.replace('\n','')
-      line = line.replace(' ','')
-      #Splitting data of line on basis of ':' or 'tab' 
-      info = re.split(':|\t',line)
-      #If splitted data has only 2 elements it will be first line of new word
-      if(len(info) == 2):
-          val = Pair()
-          val.doc_freq = int(info[1]) #Getting doc freq
-          curr_word = info[0] #Getting word
-          d[curr_word] = val #Storing in the dictionary
-      #Otherwise it will be a line which has docIDs and positions of the word
-      else:
-          positions = info[2].split(',') #Getting poisitions by splitting on basis of comma
-          positions = [int(i) for i in positions]
-          d[curr_word].details[int(info[1])] = positions #Storing docID and positions for that word in the dictionary
-    
+      d = json.loads(f.read())
+    for key in d.keys():
+      val = Pair()
+      val.doc_freq = len(d[key])
+      # val.details = d[key]
+      temp_d = {}
+      for k in d[key].keys():
+        temp_d[int(k)] = d[key][k]
+      val.details = temp_d
+      d[key] = val
+      
     self.dictdata = d
     
   def computeAvgDocLen(self):

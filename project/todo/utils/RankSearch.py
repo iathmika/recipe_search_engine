@@ -2,6 +2,7 @@ from .InvertedIndex import preProcessing
 ## Module to store retreive document ids in sorted set
 from sortedcontainers import SortedSet
 import math
+import itertools
 
 #index_dict = {}
 # ****START: Some basic utils for avoiding code replication **** #
@@ -11,7 +12,10 @@ import math
 def getTermFreqInDoc(term, docId, index_dict):
     if term in index_dict:
         pair_val = index_dict[term]
+        # print(pair_val.details)
+        # print("Freq: ", pair_val.doc_freq)
         if docId in pair_val.details:
+            # print("doc_id : "+ str(docId) +  " " + str(len(pair_val.details[docId])))
             return len(pair_val.details[docId])
 
     return -1
@@ -47,6 +51,7 @@ def fetchDocIds(term, is_negation, index_dict):
     rsl = SortedSet()
     if term in index_dict:
         vpair = index_dict[term]
+        # print("Size vpair: ", len(vpair.details))
         for d in vpair.details.keys():
             rsl.add(int(d))
 
@@ -61,7 +66,7 @@ def fetchDocIds(term, is_negation, index_dict):
 
 ## Method for computing the TFIDF and BM25 score for a query with respect to a document id
 ## Results are sorted in descending order of the score
-def processRankedQuery(query, indexObj, type):
+def processRankedQuery(query, indexObj, search_type):
   index_dict = indexObj.getIndexDict()
   ## Required for bm25 
   if (type == 0): 
@@ -80,7 +85,7 @@ def processRankedQuery(query, indexObj, type):
           if dft > 0:
               for doc_id in tmp:
                   tfd = getTermFreqInDoc(term, doc_id, index_dict)
-                  if (type == 1):
+                  if (search_type == 1):
                     ## Compute TFIDF score
                     new_score = (1 + math.log10(tfd)) * math.log10(5000/dft)
                   else:
@@ -91,15 +96,8 @@ def processRankedQuery(query, indexObj, type):
                   if doc_id in rsl:
                       cur_score = rsl[doc_id]
                   rsl[doc_id] = cur_score + new_score
-
   if len(rsl) > 0:
-    sorted_dict = dict(sorted(rsl.items(), key=lambda item: item[1], reverse = True))
-    #cnt = 1
-    #for k,v in sorted_dict.items():
-    #    if (cnt == 151): break
-    #    fout.write(str(k) + ',%.4f' %v + '\n')
-    #    cnt += 1
-
+    sorted_dict = dict(sorted(rsl.items(), key=lambda item: item[1]))
     return sorted_dict
 
 def score_BM25(doc_nums, doc_nums_term, term_freq, k1, dl, avgdl):
