@@ -1,0 +1,29 @@
+
+.App{
+    background-image: url("https://c1.wallpaperflare.com/preview/955/330/329/bright-colors-cream-creamy.jpg"); 
+    background-size: cover;
+    background-position: center;
+    align-items: center;
+
+}
+.button {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    background-color: gray;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    height: 100%;
+    padding: 1rem 1rem;
+    border-radius: 1rem;
+
+    }
+    
+    button:hover {
+    background-color: #333333;
+    }
+
+
+
+
