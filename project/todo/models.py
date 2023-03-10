@@ -84,10 +84,10 @@ class RecipeData:
         return query_result
      
 
-if __name__ == "__main__":
+#if __name__ == "__main__":
    
 
-      recipe_data = RecipeData.getInstance()
+ #     recipe_data = RecipeData.getInstance()
       # recipe_data._collection.drop()
     
     #Added on 25/02/2022 by Radhikesh
