@@ -26,6 +26,7 @@ search_type = "tfidf"
 
 class RecipeSearch:
   indexObj = None
+  modelObj = None
   __instance = None
   @staticmethod
   def isInstanceEmpty():
@@ -43,6 +44,10 @@ class RecipeSearch:
   def getRecipeIndexObj():
     return RecipeSearch.__instance.indexObj
   
+  @staticmethod
+  def getRecipeModelObj():
+    return RecipeSearch.__instance.modelObj
+
   def __init__(self):
     """ Virtually private constructor. """
     if RecipeSearch.__instance != None:
@@ -63,11 +68,13 @@ class RecipeSearch:
     print(" indx_size : ", indx_size)
     return HttpResponse(template.render())
   
+
   def searchQueryResult(request):
     print ("Request method :", request.method)
     query = request.GET.get("query")
     print(query)
     index_obj = RecipeSearch.getInstance().getRecipeIndexObj()
+    recipe_obj = RecipeSearch.getInstance().getRecipeModelObj()
     start = time.time()
     if (search_type == "tfidf"):
       rsl = RankSearch.rankByTFIDF(query, index_obj)
@@ -75,56 +82,25 @@ class RecipeSearch:
       rsl = RankSearch.rankByBM25(query, index_obj)
     elif (search_type == "other"):
       rsl = BooleanSearch.boolean_search(query, index_obj)
-
-
-    if rsl != None:
+    if rsl!=None:
       recipes = {"results" : []}
-      recipe_data = RecipeData.getInstance()
-      for did in rsl:
-        title = recipe_data.get_recipe_fields(did)[0]
-        ingredients = recipe_data.get_recipe_fields(did)[1]
-        directions = recipe_data.get_recipe_fields(did)[2]     
-        recipes["results"].append({"id" : did, "title": title, "ingredients": ingredients, "directions": directions})
-        #output_str += str(did) + title + "\n"
-      recipes_object = json.dumps(recipes) 
-      print(recipes_object)
+      recipes_cursor = recipe_obj.get_multiple_recipes(list(rsl.keys())[:300])
+      
+      list_cursor = list(recipes_cursor)
+      start = time.time()
+      for data in list_cursor:
+          recipes["results"].append(data)
+      print("Loop time: ", time.time() - start)
+      # print("List cursor: ",list_cursor)
+      # recipes["results"] = dumps(list_cursor, indent = 2)
+      recipes_object = json.dumps(recipes)
+      #print("List cursor: ",list_cursor)
+      # print("Recipes_object: ",recipes_object)
     else:
       recipes_object = json.dumps({})
       print ("Sorry! No search results found")
+    # recipes_object = json.dumps({})
     return HttpResponse(recipes_object) 
-
-  # def searchQueryResult(request):
-  #   print ("Request method :", request.method)
-  #   query = request.GET.get("query")
-  #   print(query)
-  #   index_obj = RecipeSearch.getInstance().getRecipeIndexObj()
-  #   start = time.time()
-  #   if (search_type == "tfidf"):
-  #     rsl = RankSearch.rankByTFIDF(query, index_obj)
-  #   elif (search_type == "bm25"):
-  #     rsl = RankSearch.rankByBM25(query, index_obj)
-  #   elif (search_type == "other"):
-  #     rsl = BooleanSearch.boolean_search(query, index_obj)
-  #   if rsl!=None:
-  #     recipes = {"results" : []}
-  #     recipe_data = RecipeData.getInstance()
-  #     # rsl_list = [str(i-1) for i in list(rsl.keys())]
-  #     # print("rsl_list: ",rsl_list)
-  #     recipes_cursor = recipe_data.get_multiple_recipes(list(rsl.keys()))
-  #     # print("recipe_cursor: ",recipes_cursor)
-  #     # for data in recipes_cursor:
-  #     #   print("data: ",data)
-           
-  #     list_cursor = list(recipes_cursor)
-  #     # print("List cursor: ",list_cursor)
-  #     recipes["results"] = dumps(list_cursor, indent = 2)
-  #     recipes_object = json.dumps(recipes)
-  #     #print("List cursor: ",list_cursor)
-  #     print("Recipes_object: ",recipes_object)
-  #   else:
-  #     recipes_object = json.dumps({})
-  #     print ("Sorry! No search results found")
-  #   return HttpResponse(recipes_object) 
 
 
       
@@ -149,6 +125,12 @@ class RecipeSearch:
 if (RecipeSearch.isInstanceEmpty()):
   recipe_obj = RecipeSearch.getInstance()
   recipe_obj.indexObj = InvertedIndex.getInvertedIndexObj()
+  recipe_obj.modelObj = RecipeData.getInstance()
+
+  print("Recipe object: ", recipe_obj)
+  print("Index object: ", recipe_obj.indexObj)
+  print("Model object: ", recipe_obj.modelObj)
+
   ## Important step Check if index.txt exists or not, if not need to create one
   if (not exists(index_file_path)):
     print ("Getting call here incorrectly")
@@ -157,6 +139,7 @@ if (RecipeSearch.isInstanceEmpty()):
   ## Step 2: Load index in memory for searching query results
   start = time.time()
   recipe_obj.indexObj.loadIndexInMemory()
+  recipe_data = RecipeData.getInstance()
   print("Time taken to load dictionary: ", time.time() - start)
   
 
