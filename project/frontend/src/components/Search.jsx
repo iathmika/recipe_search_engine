@@ -47,6 +47,7 @@ function Search() {
         <FaSearch />
         <input
           type="text"
+          placeholder="Search for your Recipe here!"
           value={input}
           onChange={(e) => setInput(e.target.value)}
         /> 
@@ -95,13 +96,15 @@ const FormStyle = styled.form`
     border: none;
     background: linear-gradient(35deg, #494949, #313131);
     font-size: 2rem;
+    font-family: "Ink Free", sans-serif;
+    font-color: white;
     color: white;
     padding: 1rem 3rem;
     border-radius: 1rem;
     outline: none;
     height: 80%;
     width: 80%;
-    opacity: 0.35;
+    opacity: 0.90;
     
   }
 
@@ -110,7 +113,7 @@ const FormStyle = styled.form`
     top: 50%;
     left: 3% ;
     transform: translate(0%, 0%);
-    color: black;
+    color: white;
     
   }
 `;

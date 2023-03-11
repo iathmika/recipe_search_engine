@@ -6,10 +6,11 @@ import styled from "styled-components";
 import { GiKnifeFork } from "react-icons/gi";
 import Search from "./components/Search";
 import Loader from "./components/Loader";
+import logo from "./images/favpng_cooking-cartoon.png";
 import Pages from "./components/Pages"
 import Category from "./components/Category"
 import "./index.css"
-
+import './App.css';
 
 
 function App() {
@@ -18,8 +19,8 @@ function App() {
       <Router >
         
           <GiKnifeFork />
-          <Logo to="/">Recipe Search </Logo>
-         
+          <Logo to="/"><img src={logo}  width={150} height={150} /> Recipe Search </Logo>
+          
           <Nav> <Search /></Nav>
                 
          <br/> <Category /> 
@@ -43,11 +44,11 @@ text-decoration: none;
 text-align: center;
 justify-content: center;
 align-items: center;
-font-size: 5.5rem;
-font-weight: 400;
-font-family: "Consolas", sans-serif;
+font-size: 6rem;
+font-weight: 710;
+font-family: "Ink Free", sans-serif;
 padding-left: 2rem;
-color: gray;
+color: white;
 
   
 `;
@@ -61,7 +62,7 @@ const Nav = styled.div`
   justify-content: flex-start;
   align-items: center;
   svg {
-    color: var(--gray-600);
+    color: var(--white-600);
     font-size: 2rem;
   }
 `;

@@ -1,7 +1,10 @@
 
 .App{
-    background-image: url("https://c1.wallpaperflare.com/preview/955/330/329/bright-colors-cream-creamy.jpg"); 
-    background-size: cover;
+    background-image: url("https://i.pinimg.com/originals/8a/51/00/8a5100c7919128817aff8d2c1a9ae86d.jpg");
+    
+    
+    background-size: contain;
+    /* background-repeat: no-repeat; */
     background-position: center;
     align-items: center;
 
@@ -10,13 +13,14 @@
     position: relative;
     display: flex;
     flex-wrap: wrap;
-    background-color: gray;
+    background-color: rgb(86, 86, 86);
     color: #fff;
-    font-size: 16px;
+    font-size: 17px;
+    font-family: "Ink Free", sans-serif;
     cursor: pointer;
     height: 100%;
-    padding: 1rem 1rem;
-    border-radius: 1rem;
+    padding: 1.5rem 1.5rem;
+    border-radius: 1.5rem;
 
     }
     
