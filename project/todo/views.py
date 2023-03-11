@@ -55,18 +55,20 @@ class RecipeSearch:
     if rsl != None:
       for did in rsl:
       # for did in rsl.keys():
-        did = str(did-1)
-        print("did: ",did)
+        #did = str(did-1)
+        #print("did: ",did)
         recipe_data = RecipeData.getInstance()
+        print(recipe_data,"Working")
         title = recipe_data.get_recipe_fields(did)[0]
         ingredients = recipe_data.get_recipe_fields(did)[1]
         directions = recipe_data.get_recipe_fields(did)[2]     
         recipes["results"].append({"id" : did, "title": title, "ingredients": ingredients, "directions": directions})
         #output_str += str(did) + title + "\n"
       recipes_object = json.dumps(recipes) 
-      print(recipes_object)
+      #print(recipes_object)
     else:
       print ("Sorry! No search results found")
+    
     return HttpResponse(recipes_object) 
    
   def home(request):
