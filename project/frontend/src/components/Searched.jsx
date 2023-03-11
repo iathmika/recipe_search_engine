@@ -18,11 +18,11 @@ import ReactCardFlip from 'react-card-flip'; function Searched() {
     const newFlips = [...flips];
     newFlips[index] = !newFlips[index];
     setFlips(newFlips);
-  };   return (<Grid>
+  };return (<Grid>
       {searchedRecipes.map((recipe, index) => (<ReactCardFlip
           key={recipe.title}
           isFlipped={flips[index]}
-          flipDirection="vertical"><FrontCard onClick={() => handleClick(index)}><h3>{recipe.title}</h3><h4>{recipe.ingredients}</h4></FrontCard><BackCard onClick={() => handleClick(index)}><h5>{recipe.directions}</h5></BackCard></ReactCardFlip>
+          flipDirection="vertical"><FrontCard onClick={() => handleClick(index)}><h3>{recipe.title}</h3><h4>{recipe.ingredients}</h4></FrontCard><BackCard onClick={() => handleClick(index)}><h5>* {recipe.directions}</h5></BackCard></ReactCardFlip>
       ))}</Grid>
   );
 } const Grid = styled.div`
@@ -41,27 +41,34 @@ import ReactCardFlip from 'react-card-flip'; function Searched() {
     text-align: center;
     padding: 1rem;
   }
+::-webkit-scrollbar {display:none;}
 `; const FrontCard = styled(Card)`
-  background: gray;
-  color: black;
+  background: brown;
+  color: white;
   height: 500px;
   padding: 20px;
   border-radius: 4rem;
   font-size: 40px;
+  font-family: "Ink Free", sans-serif;
+  font-weight:600;
   text-align: center;
   margin: 20px;
   cursor: pointer;
 overflow-y: scroll;
+  opacity:0.75;
 `; 
 const BackCard = styled(Card)`
-  background: gray;
-  color: black;
+  background: brown;
+  color: white;
   height: 500px;
   padding: 20px;
   border-radius: 4rem;
   font-size: 40px;
+  font-family: "Ink Free", sans-serif;
+  font-weight:600;
   text-align: center;
   margin: 20px;
   cursor: pointer;
 overflow-y: scroll;
+opacity:0.75;
 `; export default Searched;
