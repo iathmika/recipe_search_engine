@@ -13,6 +13,11 @@ from bson.json_util import dumps, loads
 import json
 import time
 
+import nltk
+from nltk.corpus import wordnet
+nltk.download('wordnet')
+nltk.download('omw-1.4')
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 app_path = Path(__file__).resolve().parent
 index_file_path = os.path.join(app_path, 'sample_index.json')
@@ -68,11 +73,20 @@ class RecipeSearch:
     print(" indx_size : ", indx_size)
     return HttpResponse(template.render())
   
+  
 
   def searchQueryResult(request):
     print ("Request method :", request.method)
     query = request.GET.get("query")
-    print(query)
+    print("Before expansion: ", query)
+
+    ##########Query expansion########
+    query = expand_query(query)
+
+    print("After expansion: ", query)
+
+
+
     index_obj = RecipeSearch.getInstance().getRecipeIndexObj()
     recipe_obj = RecipeSearch.getInstance().getRecipeModelObj()
     start = time.time()
@@ -142,4 +156,31 @@ if (RecipeSearch.isInstanceEmpty()):
   recipe_data = RecipeData.getInstance()
   print("Time taken to load dictionary: ", time.time() - start)
   
+
+
+# Function to expand a query
+def expand_query(query):
+  # tokenize the query
+  words = nltk.word_tokenize(query)
+  # print(words)
+
+  # create a list to hold the expanded terms
+  expanded_words = []
+
+  # loop through each word in the query
+  for word in words:
+      # get the synonyms for each word
+      synonyms = wordnet.synsets(word)
+      expanded_words.append(word)
+      print(synonyms)
+      for syn in synonyms:
+          for lemma in syn.lemmas():
+              if lemma.name() not in expanded_words:
+              # add the synonym to the list of expanded terms
+                expanded_words.append(lemma.name())
+
+  # return the expanded query as a string
+  return ' '.join(expanded_words)
+
+
 
