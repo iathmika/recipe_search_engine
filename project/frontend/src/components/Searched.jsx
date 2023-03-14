@@ -22,7 +22,7 @@ import ReactCardFlip from 'react-card-flip'; function Searched() {
       {searchedRecipes.map((recipe, index) => (<ReactCardFlip
           key={recipe.title}
           isFlipped={flips[index]}
-          flipDirection="vertical"><FrontCard onClick={() => handleClick(index)}><h3>{recipe.title}</h3><h4>{recipe.ingredients}</h4></FrontCard><BackCard onClick={() => handleClick(index)}><h5>* {recipe.directions}</h5></BackCard></ReactCardFlip>
+          flipDirection="vertical"><FrontCard onClick={() => handleClick(index)}><h3>{index+1}. {recipe.title}</h3><h4>{recipe.ingredients}</h4></FrontCard><BackCard onClick={() => handleClick(index)}><h5>* {recipe.directions}</h5></BackCard></ReactCardFlip>
       ))}</Grid>
   );
 } const Grid = styled.div`
