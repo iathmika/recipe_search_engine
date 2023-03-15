@@ -20,7 +20,7 @@
     top: -8rem;
     display: flex;
     flex-wrap: wrap;
-    background-color: rgb(86, 86, 86);
+    background-color: rgb(167, 105, 64);
     color: #fff;
     font-size: 17px;
     font-family: "Ink Free", sans-serif;
@@ -34,7 +34,7 @@
 }
 .Advsearch_options:hover{
     color: white;
-    background: gray;
+    background: (167, 105, 64);
 }
 .Advsearch_dropoptions{
     list-style-type: none;
@@ -42,7 +42,7 @@
     bottom:-20px;
     left:0;
     width:100%;
-    background: gray;
+    background: rgb(167, 105, 64);
     padding: 1rem 1rem;
     border-radius: 1.5rem;
     line-height: 1.5rem;

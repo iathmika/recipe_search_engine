@@ -14,25 +14,30 @@ import './App.css';
 import Advsearch from "./Advsearch"
 import "./Advsearch.css"
 
+/* Add Recipe Search (Chef's Recipes) in a separate div */
 
 function App() {
   return (
-    <div className="App">
+    
       <Router >
-        
+      <div className="app-wrap">
           <GiKnifeFork />
+          
           <Logo to="/"><img src={logo}  width={150} height={150} /> Recipe Search </Logo>
           
-          <Nav> <Search /></Nav>
-          <Advsearch />      
-         <Category /> 
-         
+          <div class="app-content">
+            <Nav> <Search /></Nav>
+            <Advsearch /> 
+            </div>   
+            
+            <Category /> 
+          </div>
          <Pages />
          
           
-         
+        
       </Router>
-    </div>
+   
   );
 }
 

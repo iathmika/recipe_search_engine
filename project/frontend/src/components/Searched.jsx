@@ -25,7 +25,10 @@ function Searched() {
     const newFlips = [...flips];
     newFlips[index] = !newFlips[index];
     setFlips(newFlips);
-  }; return (<Grid>
+  }; return (
+
+    <Display> <h1> Displaying Most Relevant Search Results </h1>
+  <Grid>
     {searchedRecipes.map((recipe, index) => (<ReactCardFlip
       key={recipe.title}
       isFlipped={flips[index]}
@@ -42,9 +45,15 @@ function Searched() {
         </ReactCardFlip>
     ))}
     </Grid>
+    </Display>
   );
 } 
 
+const Display = styled.div`
+color: brown;
+align-items: center;
+
+`;
 const Grid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));

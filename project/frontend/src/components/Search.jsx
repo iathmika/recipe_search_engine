@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { FaSearch } from "react-icons/fa";
+import { FaTimes } from "react-icons/fa";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import image from "../images/bg.jpeg";
@@ -17,7 +18,13 @@ function Search() {
     e.preventDefault();
     navigate(`/searched/${input}`);
     console.log(e);
+
+
   };
+
+  const handleClearBtn = () => {
+    setInput('');
+  }
 
   /* return (
     <FormStyle onSubmit={submitHandler}>
@@ -42,18 +49,25 @@ function Search() {
   return (
    
       <FormStyle onSubmit={submitHandler}>
+
      
     
-        <FaSearch />
-        <input
-          type="text"
-          placeholder="Search for your Recipe here!"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-        /> 
-  
-    
-         <Button text="Search" onClick={submitHandler} />
+        <div class="search-bar">
+          <div class="search-box">
+          <input
+            type="text"
+            placeholder="Search for your Recipe here!"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            autofocus required/> 
+            <FaTimes // Cross Button 
+            onClick={handleClearBtn}/>
+          </div>
+         
+          <FaSearch  // Search Logo Button
+          onClick={submitHandler} /> </div>
+      
+        
         
         
     </FormStyle> 
@@ -61,7 +75,7 @@ function Search() {
 
   )
 }
-//
+// <Button text="Search" onClick={submitHandler} />
 const FormStyle = styled.form`
   position: relative;
   width: 100%;
@@ -81,40 +95,81 @@ const FormStyle = styled.form`
   align-items: center;
 
   
-
+  .fa-times:hover {
+    cursor: pointer;
+  }
   div {
     align-items: center;
     position: relative;
     width: 100%;
     display: block;
     justify-content: center;
+    border: 2px solid #ccc;
 
   }
-
+ 
   input {
    
-    border: none;
-    background: linear-gradient(35deg, #494949, #313131);
+    border: 0;
+    position: relative;
+    background: transprent;
     font-size: 2rem;
     font-family: "Ink Free", sans-serif;
-    font-color: white;
-    color: white;
-    padding: 1rem 3rem;
-    border-radius: 1rem;
+    font-color: black;
+    
+    padding: 1rem 1rem;
+    border-radius: 0rem;
     outline: none;
-    height: 80%;
-    width: 80%;
-    opacity: 0.90;
+    height: 100%;
+    width: 92%;
+    opacity: 0.75;
+    &::placeholder {
+      color: var(--color);
+      opacity: 0.75;
+    }
+   
+    
+  }
+  Button{
+    border: none;
+    background-color: rgb(91, 44, 13);
+    cursor: pointer;
+  }
+/*
+  svg {
+    position: relative;
+
+    transform: translate(0%, 0%);
+    color: black;
+    
+  }
+  */
+  FaTimes{
+    position: relative;
+    color: black;
+    width: 8%;
+    
+    
+  }
+  FaTime:hover{
+    cursor: pointer; 
+  }
+  
+  FaSearch{
+    width: 3%;
+    cursor: pointer;
     
   }
 
-  svg {
-    position: relative;
-    top: 50%;
-    left: 3% ;
-    transform: translate(0%, 0%);
-    color: white;
+
+  .search-bar{
+    width: 60%;
     
+  }
+  .search-box{
+    width: 90%;
+    height: 100%;
+    background: white;
   }
 `;
 
