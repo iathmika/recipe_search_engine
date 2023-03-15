@@ -6,7 +6,8 @@ import { useNavigate } from "react-router-dom";
 import image from "../images/bg.jpeg";
 import Button from "./Button"
 import React from "react";
-//import { MDBBtn } from 'mdb-react-ui-kit';
+
+
 function Search() {
   const [input, setInput] = useState("");
 
@@ -50,22 +51,25 @@ function Search() {
    
       <FormStyle onSubmit={submitHandler}>
 
-     
-    
         <div class="search-bar">
           <div class="search-box">
-          <input
-            type="text"
-            placeholder="Search for your Recipe here!"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            autofocus required/> 
-            <FaTimes // Cross Button 
-            onClick={handleClearBtn}/>
+            <input
+              type="text"
+              placeholder="Search for your Recipe here!"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              autofocus 
+              required
+            />
+            <button class="cross-btn">
+              <FaTimes onClick={handleClearBtn}/>
+            </button>
           </div>
-         
-          <FaSearch  // Search Logo Button
-          onClick={submitHandler} /> </div>
+          {/* Search Logo */}
+          <button class="search-btn">
+            <FaSearch onClick={submitHandler} /> 
+          </button>
+        </div>
       
         
         
@@ -75,45 +79,24 @@ function Search() {
 
   )
 }
-// <Button text="Search" onClick={submitHandler} />
+
 const FormStyle = styled.form`
   position: relative;
-  width: 100%;
-  width: 100%;
-  width: 100%;
-  width: 100%;
-  width: 100%;
-  width: 100%;
-  width: 100%;
-  width: 100%;
-  width: 100%;
-  width: 100%;
-  width: 100%;
+  margin: 0 auto;
+  width: max-content;
   display: flex;
-  
   justify-content: center;
   align-items: center;
 
-  
   .fa-times:hover {
     cursor: pointer;
   }
-  div {
-    align-items: center;
-    position: relative;
-    width: 100%;
-    display: block;
-    justify-content: center;
-    border: 2px solid #ccc;
-
-  }
  
   input {
-   
     border: 0;
     position: relative;
     background: transprent;
-    font-size: 2rem;
+    font-size: 1rem;
     font-family: "Ink Free", sans-serif;
     font-color: black;
     
@@ -123,18 +106,20 @@ const FormStyle = styled.form`
     height: 100%;
     width: 92%;
     opacity: 0.75;
+
     &::placeholder {
       color: var(--color);
       opacity: 0.75;
     }
-   
-    
   }
-  Button{
+
+  button {
     border: none;
     background-color: rgb(91, 44, 13);
     cursor: pointer;
+    color: white;
   }
+
 /*
   svg {
     position: relative;
@@ -143,14 +128,13 @@ const FormStyle = styled.form`
     color: black;
     
   }
-  */
+  
   FaTimes{
     position: relative;
     color: black;
-    width: 8%;
-    
-    
+    width: 8%; 
   }
+
   FaTime:hover{
     cursor: pointer; 
   }
@@ -160,16 +144,54 @@ const FormStyle = styled.form`
     cursor: pointer;
     
   }
+  */
 
-
-  .search-bar{
-    width: 60%;
-    
-  }
-  .search-box{
-    width: 90%;
-    height: 100%;
+  .search-bar {
+    width: 100%;
+    min-width: 50vw;
+    display: flex;
+    align-items: center;
     background: white;
+    border: none;
+    padding: 0;
+    border-radius: 0.25rem;
+    overflow: hidden;
+  }
+
+  .search-box {
+    height: 100%;
+    width: 90%;
+    background: white;
+    position: relative;
+  }
+
+  .cross-btn {
+    position: absolute;
+    right: 0;
+    height: 100%;
+    top: 0;
+    background: none;
+    color: black;
+    padding: 0 0.5rem;
+
+    svg {
+      width: 24px;
+      height: 24px;
+    }
+  }
+
+  .search-btn {
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding: 1rem;
+    position: relative;
+    width: 10%;
+
+    svg {
+      width: 24px;
+      height: 24px;
+    }
   }
 `;
 

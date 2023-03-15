@@ -20,18 +20,24 @@ function App() {
   return (
     
       <Router >
+        <LogoWrapper>
+            <Logo to="/">
+              <img src={logo} alt="" width={100} height={100} />
+              Recipe Search 
+            </Logo>
+          </LogoWrapper>
       <div className="app-wrap">
-          <GiKnifeFork />
-          
-          <Logo to="/"><img src={logo}  width={150} height={150} /> Recipe Search </Logo>
           
           <div class="app-content">
-            <Nav> <Search /></Nav>
+            <Heading>Being Smart Chef Everyday</Heading>
+            <Nav> 
+              <Search />
+            </Nav>
             <Advsearch /> 
-            </div>   
+          </div>   
             
             <Category /> 
-          </div>
+      </div>
          <Pages />
          
           
@@ -41,30 +47,48 @@ function App() {
   );
 }
 
+const LogoWrapper = styled.div`
+  background: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 99;
+  padding: 1rem 0;
+  position: sticky;
+  top: 0;
+  left: 0;
+  right: 0;
+`
 
 const Logo = styled(Link)`
+  position: relative; 
+  display: flex;
+  text-decoration: none;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  font-size: 2.5rem;
+  font-weight: bold;
+  font-family: "Ink Free", sans-serif;
+  padding-left: 2rem;
+  color: white;
 
-
-position: relative; 
-display: flex;
-text-decoration: none;
-text-align: center;
-justify-content: center;
-align-items: center;
-font-size: 6rem;
-font-weight: 710;
-font-family: "Ink Free", sans-serif;
-padding-left: 2rem;
-color: white;
-
-  
+  img {
+    object-fit: contain;
+  }
 `;
 
+const Heading = styled.h1`
+ padding: 7rem 0 1rem;
+ text-align: center;
+ color: white;
+ font-weight: bold;
+`
+
 const Nav = styled.div`
-  
   background-repeat: no-repeat;
   background-size: cover;
-  padding: 10rem 0;
+  padding: 0 0 8rem;
   display: flex;
   justify-content: flex-start;
   align-items: center;
