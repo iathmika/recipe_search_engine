@@ -1,53 +1,82 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import ReactCardFlip from 'react-card-flip'; function Searched() {
-  const [searchedRecipes, setSearchedRecipes] = useState([]);
-  let params = useParams();
-  const [flips, setFlips] = useState([]);   const getFlipInitialState = (num) => {
-    const initialState = Array(num).fill(false);
-    return initialState;
-  };   const getSearched = async (name) => {
-    const data = await fetch(`http://localhost:8000/search/?query=${name}`);
-    const recipes = await data.json();
-    setSearchedRecipes(recipes.results);
-    setFlips(getFlipInitialState(recipes.results.length));
-  };   useEffect(() => {
-    getSearched(params.search);
-  }, [params.search]);   const handleClick = (index) => {
-    const newFlips = [...flips];
-    newFlips[index] = !newFlips[index];
-    setFlips(newFlips);
-  };return (<Grid>
-      {searchedRecipes.map((recipe, index) => (<ReactCardFlip
-          key={recipe.title}
-          isFlipped={flips[index]}
-          flipDirection="vertical"><FrontCard onClick={() => handleClick(index)}><h3>{recipe.title}</h3><h4>{recipe.ingredients}</h4></FrontCard><BackCard onClick={() => handleClick(index)}><h5>* {recipe.directions}</h5></BackCard></ReactCardFlip>
-      ))}</Grid>
-  );
-} const Grid = styled.div`
+import ReactCardFlip from 'react-card-flip';
+import { FaExternalLinkAlt } from "react-icons/fa";
+
+function Searched() {
+  const [searchedRecipes, setSearchedRecipes] = useState([]);
+  let params = useParams();
+  const [flips, setFlips] = useState([]); const getFlipInitialState = (num) => {
+    const initialState = Array(num).fill(false);
+    return initialState;
+  };
+
+  const getSearched = async (name) => {
+    const data = await fetch(`http://localhost:8000/search/?query=${name}`);
+    const recipes = await data.json();
+    setSearchedRecipes(recipes.results);
+    setFlips(getFlipInitialState(recipes.results.length));
+  }; useEffect(() => {
+    getSearched(params.search);
+  }, [params.search]); 
+  
+  const handleClick = (index) => {
+    const newFlips = [...flips];
+    newFlips[index] = !newFlips[index];
+    setFlips(newFlips);
+  }; return (<Grid>
+    {searchedRecipes.map((recipe, index) => (<ReactCardFlip
+      key={recipe.title}
+      isFlipped={flips[index]}
+      flipDirection="vertical">
+        <FrontCard onClick={() => 
+          handleClick(index)}><h3>{index + 1}. {recipe.title}</h3>
+          </FrontCard>
+        <BackCard onClick={() => 
+        handleClick(index)}>
+          <h5> {recipe.ingredients}</h5> 
+          <a href={"https://"+recipe.link} > <FaExternalLinkAlt/> </a>
+         
+        </BackCard>
+        </ReactCardFlip>
+    ))}
+    </Grid>
+  );
+} 
+
+const Grid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
-  grid-gap: 3rem;
-`; const Card = styled.div`
+  grid-gap: 1.5rem;
+a{
+  color: black'
+}
+`; 
+
+
+const Card = styled.div`
   img {
     width: 100%;
-    border-radius: 2rem;
+    border-radius: 1rem;
   }
   a {
     text-decoration: none;
+color:black;
   }
   h4 {
     text-align: center;
     padding: 1rem;
   }
 ::-webkit-scrollbar {display:none;}
-`; const FrontCard = styled(Card)`
-  background: brown;
+`;
+
+const FrontCard = styled(Card)`
+  background: #7B5912;
   color: white;
-  height: 500px;
+  height: 300px;
   padding: 20px;
-  border-radius: 4rem;
+  border-radius: 1rem;
   font-size: 40px;
   font-family: "Ink Free", sans-serif;
   font-weight:600;
@@ -56,13 +85,18 @@ import ReactCardFlip from 'react-card-flip'; function Searched() {
   cursor: pointer;
 overflow-y: scroll;
   opacity:0.75;
-`; 
+`;
+
 const BackCard = styled(Card)`
-  background: brown;
+a {
+      text-decoration: none;
+  color:black;
+    }
+  background: #7B5912;
   color: white;
-  height: 500px;
+  height: 300px;
   padding: 20px;
-  border-radius: 4rem;
+  border-radius: 1rem;
   font-size: 40px;
   font-family: "Ink Free", sans-serif;
   font-weight:600;
@@ -71,4 +105,4 @@ const BackCard = styled(Card)`
   cursor: pointer;
 overflow-y: scroll;
 opacity:0.75;
-`; export default Searched;
+`; export default Searched;

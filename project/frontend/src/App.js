@@ -11,6 +11,8 @@ import Pages from "./components/Pages"
 import Category from "./components/Category"
 import "./index.css"
 import './App.css';
+import Advsearch from "./Advsearch"
+import "./Advsearch.css"
 
 
 function App() {
@@ -22,11 +24,11 @@ function App() {
           <Logo to="/"><img src={logo}  width={150} height={150} /> Recipe Search </Logo>
           
           <Nav> <Search /></Nav>
-                
-         <br/> <Category /> 
+          <Advsearch />      
+         <Category /> 
          
          <Pages />
-          
+         
           
          
       </Router>
