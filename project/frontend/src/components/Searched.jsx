@@ -34,14 +34,38 @@ function Searched() {
   
   const handleClick = (index, type, recipeTitle, recipeIngredients, recipeDirections) => {
     if(type == "back"){
+      
       setRecipeCardClick(true)
       setRecipeName(recipeTitle)
       setRecipeIngredients(recipeIngredients)
       setRecipeDirections(recipeDirections)
       const updatedRecipeTitle = recipeTitle.replaceAll(" ", '-')
+      const data = {
+        recipeTitle: updatedRecipeTitle,
+        recipeDirection: recipeDirections,
+        recipeIngredients: recipeIngredients,
+      };
+      /*
+      fetch(`/recipeDetail/${updatedRecipeTitle}/` ,{
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+        .then(response => response.json())
+        .then(data => {
+          // handle response data
+
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+        */
       navigator(`/recipe-detail/${updatedRecipeTitle}?recipeTitle='${recipeTitle}&recipeDirection='${recipeDirections}'
-      &recipeIngredients='${recipeIngredients}'
-      `);
+      &recipeIngredients='${recipeIngredients}'`);
+     //http://localhost:3000/recipe-detail/$%7BupdatedRecipeTitle%7D/
+     //http://localhost:3000/recipe-detail/Vanilla-Ice-Cream/
     }
     const newFlips = [...flips];
     newFlips[index] = !newFlips[index];
@@ -65,7 +89,9 @@ function Searched() {
               </FrontCard>
               <BackCard 
               onClick={() => handleClick(index,"back",recipe.title, recipe.ingredients, recipe.directions)}
+              onMouseLeave={() => handleClick(index,"front",'')}
               >
+                
                 <h5> 
                   <ul>
                     {JSON.parse(recipe.ingredients).map(
@@ -77,6 +103,7 @@ function Searched() {
               </BackCard>
             </ReactCardFlip>
           ))}
+          
         </Grid>
       </Display>
   );
@@ -147,7 +174,7 @@ a {
   font-size: 40px;
   font-family: "Ink Free", sans-serif;
   font-weight:600;
-  text-align: center;
+  text-align: left;
   margin: 20px;
   cursor: pointer;
 overflow-y: scroll;
