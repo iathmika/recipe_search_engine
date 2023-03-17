@@ -3,57 +3,90 @@ import { Link, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import ReactCardFlip from 'react-card-flip';
 import { FaExternalLinkAlt } from "react-icons/fa";
+import RecipeDetail from './RecipeDetail';
+import { useNavigate } from "react-router-dom";
 
 function Searched() {
   const [searchedRecipes, setSearchedRecipes] = useState([]);
   let params = useParams();
-  const [flips, setFlips] = useState([]); const getFlipInitialState = (num) => {
+  const [flips, setFlips] = useState([]);
+  const [recipeCardClick, setRecipeCardClick] = useState(false);
+  const [recipeName, setRecipeName] = useState('')
+  const [recipeIngredients, setRecipeIngredients] = useState(null)
+  const [recipeDirections, setRecipeDirections] = useState(null)
+  const getFlipInitialState = (num) => {
     const initialState = Array(num).fill(false);
     return initialState;
   };
 
+  const navigator = useNavigate();
   const getSearched = async (name) => {
     const data = await fetch(`http://localhost:8000/search/?query=${name}`);
     const recipes = await data.json();
+    console.log(recipes)
     setSearchedRecipes(recipes.results);
     setFlips(getFlipInitialState(recipes.results.length));
-  }; useEffect(() => {
-    getSearched(params.search);
-  }, [params.search]); 
+  }; 
   
-  const handleClick = (index) => {
+  useEffect(() => {
+    getSearched(params.search);
+  }, [params.search]);
+  
+  const handleClick = (index, type, recipeTitle, recipeIngredients, recipeDirections) => {
+    if(type == "back"){
+      setRecipeCardClick(true)
+      setRecipeName(recipeTitle)
+      setRecipeIngredients(recipeIngredients)
+      setRecipeDirections(recipeDirections)
+      const updatedRecipeTitle = recipeTitle.replaceAll(" ", '-')
+      navigator(`/recipe-detail/${updatedRecipeTitle}?recipeTitle='${recipeTitle}&recipeDirection='${recipeDirections}'
+      &recipeIngredients='${recipeIngredients}'
+      `);
+    }
     const newFlips = [...flips];
     newFlips[index] = !newFlips[index];
     setFlips(newFlips);
-  }; return (
-
-    <Display> <h1> Displaying Most Relevant Search Results </h1>
-  <Grid>
-    {searchedRecipes.map((recipe, index) => (<ReactCardFlip
-      key={recipe.title}
-      isFlipped={flips[index]}
-      flipDirection="vertical">
-        <FrontCard onClick={() => 
-          handleClick(index)}><h3>{index + 1}. {recipe.title}</h3>
-          </FrontCard>
-        <BackCard onClick={() => 
-        handleClick(index)}>
-          <h5> {recipe.ingredients}</h5> 
-          <a href={"https://"+recipe.link} > <FaExternalLinkAlt/> </a>
-         
-        </BackCard>
-        </ReactCardFlip>
-    ))}
-    </Grid>
-    </Display>
+  }; 
+  
+  return (
+      <Display> 
+        <h1> {recipeName !== '' ? recipeName : 'Here are your recipes'} </h1>
+        <Grid>
+          {searchedRecipes.map((recipe, index) => (
+          <ReactCardFlip
+            key={recipe.title}
+            isFlipped={flips[index]}
+            flipDirection="vertical">
+              <FrontCard 
+              onClick={() => 
+                handleClick(index,"front",'')}
+              >
+                  <h3>{index + 1}. {recipe.title}</h3>
+              </FrontCard>
+              <BackCard 
+              onClick={() => handleClick(index,"back",recipe.title, recipe.ingredients, recipe.directions)}
+              >
+                <h5> 
+                  <ul>
+                    {JSON.parse(recipe.ingredients).map(
+                        (ingredient) => (<li>{ingredient}</li>)
+                    )}
+                  </ul>
+                 </h5> 
+                 <h5>Click to get directions</h5>
+              </BackCard>
+            </ReactCardFlip>
+          ))}
+        </Grid>
+      </Display>
   );
 } 
 
 const Display = styled.div`
 color: brown;
 align-items: center;
-
 `;
+
 const Grid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
@@ -95,7 +128,12 @@ const FrontCard = styled(Card)`
 overflow-y: scroll;
   opacity:0.75;
 `;
-
+const Heading = styled.h1`
+  font-size: 2.5rem;
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif';
+  text-align: center;
+  margin-bottom: 2rem;
+`;
 const BackCard = styled(Card)`
 a {
       text-decoration: none;
@@ -114,4 +152,6 @@ a {
   cursor: pointer;
 overflow-y: scroll;
 opacity:0.75;
-`; export default Searched;
+`; 
+
+export default Searched;

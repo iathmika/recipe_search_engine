@@ -19,8 +19,6 @@ function Search() {
     e.preventDefault();
     navigate(`/searched/${input}`);
     console.log(e);
-
-
   };
 
   const handleClearBtn = () => {
