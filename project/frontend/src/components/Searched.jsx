@@ -144,7 +144,7 @@ const FrontCard = styled(Card)`
   background: #7B5912;
   color: white;
   height: 300px;
-  padding: 20px;
+  padding: 85px;
   border-radius: 1rem;
   font-size: 40px;
   font-family: "Ink Free", sans-serif;
