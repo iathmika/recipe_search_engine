@@ -15,8 +15,8 @@ import time
 
 import nltk
 from nltk.corpus import wordnet
-nltk.download('wordnet')
-nltk.download('omw-1.4')
+#nltk.download('wordnet')
+#nltk.download('omw-1.4')
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 app_path = Path(__file__).resolve().parent
@@ -78,12 +78,12 @@ class RecipeSearch:
   def searchQueryResult(request):
     print ("Request method :", request.method)
     query = request.GET.get("query")
-    print("Before expansion: ", query)
+    #print("Before expansion: ", query)
 
     ##########Query expansion########
     query = expand_query(query)
 
-    print("After expansion: ", query)
+    #print("After expansion: ", query)
 
 
 
