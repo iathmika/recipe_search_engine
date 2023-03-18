@@ -12,9 +12,6 @@ function Search() {
   const [input, setInput] = useState("");
 
   let navigate = useNavigate();
-  const data = fetch(			
-    `http://localhost:8000/index/`
-);
   const submitHandler = (e) => {
     e.preventDefault();
     navigate(`/searched/${input}`);

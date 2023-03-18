@@ -22,8 +22,11 @@ function Searched() {
   const navigator = useNavigate();
   const getSearched = async (name) => {
     const data = await fetch(`http://localhost:8000/search/?query=${name}`);
+    
     const recipes = await data.json();
-    console.log(recipes)
+
+    console.log("recipes length: ",recipes.results.length);
+    
     setSearchedRecipes(recipes.results);
     setFlips(getFlipInitialState(recipes.results.length));
   }; 
@@ -40,7 +43,7 @@ function Searched() {
       setRecipeIngredients(recipeIngredients)
       setRecipeDirections(recipeDirections)
       const updatedRecipeTitle = recipeTitle.replaceAll(" ", '-')
-      const data = {
+      const recipeData = {
         recipeTitle: updatedRecipeTitle,
         recipeDirection: recipeDirections,
         recipeIngredients: recipeIngredients,
@@ -71,7 +74,18 @@ function Searched() {
     newFlips[index] = !newFlips[index];
     setFlips(newFlips);
   }; 
-  
+  //console.log("searched recipes: ",searchedRecipes);
+  //console.log("searched recipes length: ",searchedRecipes.length);
+  //console.log("type of recipes: ", typeof searchedRecipes);
+   
+    //console.log("returning cards");
+
+  if(!(searchedRecipes.length)){
+    return (
+    <h1> </h1> 
+    );
+  }
+  else {
   return (
       <Display> 
         <h1> {recipeName !== '' ? recipeName : 'Here are your recipes'} </h1>
@@ -107,7 +121,7 @@ function Searched() {
         </Grid>
       </Display>
   );
-} 
+} }
 
 const Display = styled.div`
 color: brown;
