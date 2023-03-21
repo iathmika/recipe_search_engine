@@ -9,4 +9,8 @@
 <form action="{% url 'scrape_land' %}" method="get">
   <input type="submit" value="Scrape Recipes!">
 </form>
+<form action="{% url 'recommendation_results' %}" method="get">
+  <input name="recipe_id" type="text" placeholder ="Enter Recipe Number">
+  <input type="submit" value="Recommend!">
+</form>
 

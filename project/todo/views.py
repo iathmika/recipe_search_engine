@@ -16,6 +16,7 @@ import traceback
 
 import nltk
 from nltk.corpus import wordnet
+import numpy as np
 #nltk.download('wordnet')
 #nltk.download('omw-1.4')
 
@@ -107,6 +108,40 @@ class RecipeSearch:
     return HttpResponse(template.render())
   
   
+
+  def getRecommendation(request):
+    recipe_id = request.GET.get("recipe_id")
+    print("Recipe ID: ",recipe_id)
+    print("Type Recipe ID: ",type(recipe_id))
+    recipe_obj = RecipeSearch.getInstance().getRecipeModelObj()
+    d = recipe_obj.get_recipe_by_id(int(recipe_id));
+    print(type(d))
+
+    recommendations = {"results" : []}
+    cluster_id = d["cluster_id"]
+    if(cluster_id != -1):
+      print(cluster_id)
+      result = recipe_obj.get_cluster_by_id(cluster_id)
+      doc_ids = result['doc_id']
+      docs = np.array(doc_ids)
+      # print(docs)
+      docs = np.delete(docs, np.where(docs == recipe_id)[0])
+      docs = np.random.choice(docs, size=5)
+      # print(docs)
+      recommendation_ids = docs.tolist()
+      print
+      recommendation_cursor = recipe_obj.get_multiple_recipes(recommendation_ids)
+      recommendation_list = list(recommendation_cursor)
+      for data in recommendation_list:
+          recommendations["results"].append(data)
+      recommendations_object = json.dumps(recommendations)
+      #print("List cursor: ",list_cursor)
+      # print("Recipes_object: ",recipes_object)
+    else:
+      recommendations_object = json.dumps({})
+      print ("Sorry! No recommendations found")
+    # recipes_object = json.dumps({})
+    return HttpResponse(recommendations_object) 
 
   def searchQueryResult(request):
     print ("Request method :", request.method)

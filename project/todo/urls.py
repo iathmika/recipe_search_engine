@@ -11,4 +11,5 @@ urlpatterns = [
     path('', views.RecipeSearch.index, name='landing'),
     path('search/', views.RecipeSearch.searchQueryResult, name='search_result'),
     path('scrape/', views.RecipeSearch.scrapeRecipes, name='scrape_land'),
+    path('recommendations/', views.RecipeSearch.getRecommendation, name='recommendation_results'),
 ]

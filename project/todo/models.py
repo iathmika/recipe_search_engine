@@ -6,6 +6,7 @@ class RecipeData:
     _client = MongoClient("mongodb://localhost:27017/")
     _db = _client["TTDS"]
     _collection = _db["recipe"]
+    _collection2 = _db["cluster"]
 
     @classmethod
     def getInstance(cls):
@@ -18,6 +19,9 @@ class RecipeData:
 
     def get_recipe_by_id(self, recipe_id):
         return self._collection.find_one({"id": recipe_id})
+    
+    def get_cluster_by_id(self, cluster_id):
+        return self._collection2.find_one({"cluster_id": cluster_id})
     def get_recipe_by_title(self, recipe_title):
         return self._collection.find_one({"title": recipe_title})
 
