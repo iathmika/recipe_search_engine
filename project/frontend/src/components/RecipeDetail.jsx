@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { useParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import ReactCardFlip from 'react-card-flip';
 
@@ -21,34 +21,20 @@ const Square = () => {
    );
  };
 
-//recommender fetcher
 
-//recommender function
-// function Recommender(){
-//    return(
-//    <Display2>
-//       <h1>Recommended Values</h1>
-//       {/* <Square>
-      
-//       </Square> */}
-//    </Display2>
-//    )
-// }
-
-
-function Recommendations(id) {
+function Recommendations(props) {
   const [data, setData] = useState(null);
 
   useEffect(() => {
     const fetchData = async (id) => {
       //fetch the data
-      const response = await fetch(`http://localhost:8000/recommendations/?recipe_id=14`);
+      const response = await fetch(`http://localhost:8000/recommendations/?recipe_id=${id}`);
       //store the data
       const responseData = await response.json();
       setData(responseData.results);
     };
-    fetchData();
-  }, []);
+    fetchData(props.id);
+  }, [props.id]);
 
   if (!data) {
     return <div>No recommendations</div>;
@@ -83,45 +69,64 @@ function RecipeDetail() {
    const [recipeName, setRecipeName] = useState('')
    const [recipeDirections, setRecipeDirections] = useState('[]')
    const [recipeIngredients, setRecipeIngredients] = useState('[]')
-   useEffect(()=>{
+   const [urlParams, setUrlParams] = useState({directions:null, id:null, ingredients:null})
+   const searchParams = useSearchParams()
 
-      let params = window.location.href
-      params = params.split('?')[1]
-      params = params.split('&')
-      // setRecipeName(params[0].split('=')[1].replaceAll('%20',' ').replaceAll('%27',''))
-      console.log(params)
-      setRecipeName(params[0].split('=')[1].replaceAll('%20',' ').replaceAll('%27','').replaceAll('%22',''))
-      let directions = decodeURIComponent(params[1].split('=')[1])
-      setRecipeDirections(directions.trim().slice(1,directions.trim().length-1))
-      let ingredients = decodeURIComponent(params[2].split('=')[1])
-      setRecipeIngredients(ingredients.trim().slice(1,ingredients.trim().length-1))
-      let id = parseInt(decodeURIComponent(params[3].split('=')[1]))
-      console.log(id)
+   useEffect(() => {
 
-   },[recipeIngredients])
+      if (searchParams.length > 0) {
+         const queryParams = searchParams[0]
+         const directions = queryParams.get('recipeDirection')
+         const title = queryParams.get('recipeTitle')
+         const ingredients = queryParams.get('recipeIngredients')
+         const id = queryParams.get('recipeID')
+
+         setUrlParams({
+            title: title.replaceAll('%20',' ').replaceAll('%27','').replaceAll('%22',''),
+            directions: directions.trim().slice(1,directions.trim().length-1),
+            ingredients: ingredients.trim().slice(1, ingredients.trim().length - 1),
+            id
+         })
+      }
+
+      // let params = window.location.href
+      // params = params.split('?')[1]
+      // params = params.split('&')
+      // // setRecipeName(params[0].split('=')[1].replaceAll('%20',' ').replaceAll('%27',''))
+      // console.log(params)
+      // setRecipeName(params[0].split('=')[1].replaceAll('%20',' ').replaceAll('%27','').replaceAll('%22',''))
+      // let directions = decodeURIComponent(params[1].split('=')[1])
+      // setRecipeDirections(directions.trim().slice(1,directions.trim().length-1))
+      // let ingredients = decodeURIComponent(params[2].split('=')[1])
+      // setRecipeIngredients(ingredients.trim().slice(1,ingredients.trim().length-1))
+      // let id = parseInt(decodeURIComponent(params[3].split('=')[1]))
+      // console.log(id)
+
+   }, [])
+
    return (
       <Display>
          <Div>
-            <h1> {recipeName} </h1>
+            <h1> {urlParams.title} </h1>
             <Grid>
                <h2>Ingredients</h2>
                <ul>
-                  {JSON.parse(recipeIngredients).map(
+                  {urlParams.ingredients ?JSON.parse(urlParams.ingredients).map(
                      (ingredient) => (<li>{ingredient}</li>)
-                  )}
+                  ):null}
                </ul>
                <h2>Directions</h2>
                <ul>
-                  {JSON.parse(recipeDirections).map(
+                  {urlParams.directions ? JSON.parse(urlParams.directions).map(
                      (direction) => (<li>{direction}</li>)
-                  )}
+                  ):null}
                </ul>
             </Grid>
          </Div>
          <Div2>
             <NutritionCalculator/>
             <br></br>
-            <Recommendations/>
+            {urlParams.id && <Recommendations id={urlParams.id} />}
          </Div2>
 
       </Display>
