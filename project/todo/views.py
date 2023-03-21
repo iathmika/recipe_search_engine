@@ -142,6 +142,24 @@ class RecipeSearch:
       print ("Sorry! No recommendations found")
     # recipes_object = json.dumps({})
     return HttpResponse(recommendations_object) 
+  
+  def getNutritionValue(request):
+    nutritions = {"results" : []}
+    ingredients = request.GET.get("ingredient")
+    print(ingredients)
+    # ing_list = ingredients.replace("\"", "").replace("[","").replace("]","").split(", ")
+    ing_list = ingredients.split(' ')
+    recipe_obj = RecipeSearch.getInstance().getRecipeModelObj()
+    print(ing_list)
+    recipes_object = json.dumps({})
+    cursor = recipe_obj.get_multiple_nutrition_by_ingredient(ing_list);
+    list_cursor = list(cursor)
+
+    for data in list_cursor:
+        nutritions["results"].append(data)
+    nutrition_object = json.dumps(nutritions)
+
+    return HttpResponse(nutrition_object)
 
   def searchQueryResult(request):
     print ("Request method :", request.method)
