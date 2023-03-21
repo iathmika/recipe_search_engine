@@ -68,6 +68,8 @@ def fetchDocIds(term, is_negation, index_dict):
 ## Results are sorted in descending order of the score
 def processRankedQuery(query, indexObj, search_type):
   index_dict = indexObj.getIndexDict()
+  doc_len_dict = indexObj.getDocLenDict()
+  new_score = 0
   ## Required for bm25 
   if (type == 0): 
     doc_len_dict = indexObj.getDocLenDict()

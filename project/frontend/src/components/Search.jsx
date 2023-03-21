@@ -6,16 +6,24 @@ import { useNavigate } from "react-router-dom";
 import image from "../images/bg.jpeg";
 import Button from "./Button"
 import React from "react";
+import Advsearch from "./Advsearch"
+import "./Advsearch.css"  
+import Dropdown from 'react-bootstrap/Dropdown';
+import DropdownButton from 'react-bootstrap/DropdownButton';
 
 
 function Search() {
   const [input, setInput] = useState("");
+  const [state, setstate] = useState(false);
+  const [searchtype, setSearchtype] = useState("tfidf");
 
   let navigate = useNavigate();
   const submitHandler = (e) => {
     e.preventDefault();
-    navigate(`/searched/${input}`);
+    console.log("Type: "+searchtype)
+    navigate(`/searched/${input}&${searchtype}`);
     console.log(e);
+    
   };
 
   const handleClearBtn = () => {
@@ -45,7 +53,6 @@ function Search() {
   return (
    
       <FormStyle onSubmit={submitHandler}>
-
         <div class="search-bar">
           <div class="search-box">
             <input
@@ -64,14 +71,19 @@ function Search() {
           <button class="search-btn">
             <FaSearch onClick={submitHandler} /> 
           </button>
-        </div>
-      
         
-        
+        </div> 
+        <div> 
+        <DropdownButton id="dropdown-basic-button" title={
+        <span> {searchtype}</span>
+    }>
+     <Dropdown.Item  onClick={() => setSearchtype("other")}>Other</Dropdown.Item>
+     <Dropdown.Item  onClick={() => setSearchtype("bm25")}>BM25</Dropdown.Item>
+     <Dropdown.Item  onClick={() => setSearchtype("tfidf")}>TFIDF</Dropdown.Item>
+   </DropdownButton> </div>
         
     </FormStyle> 
- 
-
+     
   )
 }
 

@@ -6,6 +6,12 @@ function RecipeDetail() {
    const [recipeName, setRecipeName] = useState('')
    const [recipeDirections, setRecipeDirections] = useState('[]')
    const [recipeIngredients, setRecipeIngredients] = useState('[]')
+
+   const getRecommended = async (name) => {
+    const data = await fetch(`http://localhost:8000/getRecommendations/query=""`);
+    //const 
+}
+    const recommendedRecipes = fetch();
    useEffect(()=>{
       let params = window.location.href
       params = params.split('?')[1]

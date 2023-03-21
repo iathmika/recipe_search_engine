@@ -11,8 +11,8 @@ import Pages from "./components/Pages"
 import Category from "./components/Category"
 import "./index.css"
 import './App.css';
-import Advsearch from "./Advsearch"
-import "./Advsearch.css"
+//import Advsearch from "./components/Advsearch"
+//import "./Advsearch.css"
 
 /* Add Recipe Search (Chef's Recipes) in a separate div */
 
@@ -33,7 +33,7 @@ function App() {
             <Nav> 
               <Search />
             </Nav>
-            <Advsearch /> 
+           
           </div>   
             
             <Category /> 

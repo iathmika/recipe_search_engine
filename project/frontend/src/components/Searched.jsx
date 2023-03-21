@@ -5,6 +5,8 @@ import ReactCardFlip from 'react-card-flip';
 import { FaExternalLinkAlt } from "react-icons/fa";
 import RecipeDetail from './RecipeDetail';
 import { useNavigate } from "react-router-dom";
+import Advsearch from "./Advsearch"
+import "./Advsearch.css"  
 
 function Searched() {
   const [searchedRecipes, setSearchedRecipes] = useState([]);
@@ -20,8 +22,13 @@ function Searched() {
   };
 
   const navigator = useNavigate();
-  const getSearched = async (name) => {
-    const data = await fetch(`http://localhost:8000/search/?query=${name}`);
+  const getSearched = async (input) => {
+    console.log("type: ");
+    console.log(Advsearch.searchtype);
+    const params = input.split("&");
+    const name = params[0];
+    const type = params[1];
+    const data = await fetch(`http://localhost:8000/search/?query=${name}&searchtype=${type}`);
     
     const recipes = await data.json();
 
@@ -104,8 +111,7 @@ function Searched() {
               <BackCard 
               onClick={() => handleClick(index,"back",recipe.title, recipe.ingredients, recipe.directions)}
               onMouseLeave={() => handleClick(index,"front",'')}
-              >
-                
+              >               
                 <h5> 
                   <ul>
                     {JSON.parse(recipe.ingredients).map(
