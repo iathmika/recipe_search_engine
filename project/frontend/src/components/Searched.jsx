@@ -24,8 +24,10 @@ function Searched() {
     const data = await fetch(`http://localhost:8000/search/?query=${name}`);
     
     const recipes = await data.json();
+    
+    console.log("recipes : ",recipes);
+    console.log("recipes length: ",recipes.results);
 
-    console.log("recipes length: ",recipes.results.length);
     
     setSearchedRecipes(recipes.results);
     setFlips(getFlipInitialState(recipes.results.length));
@@ -35,15 +37,18 @@ function Searched() {
     getSearched(params.search);
   }, [params.search]);
   
-  const handleClick = (index, type, recipeTitle, recipeIngredients, recipeDirections) => {
+  const handleClick = (index, type, id, recipeTitle, recipeIngredients, recipeDirections) => {
     if(type == "back"){
       
       setRecipeCardClick(true)
       setRecipeName(recipeTitle)
       setRecipeIngredients(recipeIngredients)
+      
       setRecipeDirections(recipeDirections)
-      const updatedRecipeTitle = recipeTitle.replaceAll(" ", '-')
+      // const updatedRecipeTitle = recipeTitle.replaceAll(" ", '-')
+      const updatedRecipeTitle = recipeTitle.replaceAll(" ", '-').replaceAll("/", "")
       const recipeData = {
+        recipeID : id,
         recipeTitle: updatedRecipeTitle,
         recipeDirection: recipeDirections,
         recipeIngredients: recipeIngredients,
@@ -65,8 +70,8 @@ function Searched() {
           console.error('Error:', error);
         });
         */
-      navigator(`/recipe-detail/${updatedRecipeTitle}?recipeTitle='${recipeTitle}&recipeDirection='${recipeDirections}'
-      &recipeIngredients='${recipeIngredients}'`);
+      navigator(`/recipe-detail/${updatedRecipeTitle}?recipeTitle='${recipeTitle}'&recipeDirection='${recipeDirections}'
+      &recipeIngredients='${recipeIngredients}'&recipeID='${id}'`);
      //http://localhost:3000/recipe-detail/$%7BupdatedRecipeTitle%7D/
      //http://localhost:3000/recipe-detail/Vanilla-Ice-Cream/
     }
@@ -102,7 +107,7 @@ function Searched() {
                   <h3>{index + 1}. {recipe.title}</h3>
               </FrontCard>
               <BackCard 
-              onClick={() => handleClick(index,"back",recipe.title, recipe.ingredients, recipe.directions)}
+              onClick={() => handleClick(index,"back", recipe.id, recipe.title, recipe.ingredients, recipe.directions)}
               onMouseLeave={() => handleClick(index,"front",'')}
               >
                 
