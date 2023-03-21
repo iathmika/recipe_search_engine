@@ -12,15 +12,19 @@ from pathlib import Path
 from bson.json_util import dumps, loads
 import json
 import time
+import traceback
 
 import nltk
 from nltk.corpus import wordnet
+import numpy as np
 #nltk.download('wordnet')
 #nltk.download('omw-1.4')
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 app_path = Path(__file__).resolve().parent
 index_file_path = os.path.join(app_path, 'sample_index.json')
+scraped_file_path = os.path.join(app_path, 'scraped_recipies.json')
+
 print ("Index file path :" + index_file_path)
 
 ## By default TFIDF technique is used ##
@@ -29,12 +33,42 @@ print ("Index file path :" + index_file_path)
 ## (!1 && !2) -> Boolean, Proximity, Phrase
 search_type = "tfidf"
 
+## This method reads the scraped data and updates the existing running index
+def updateIndvertedIndex(scraped_file):
+  #step 1: Dictionary already loaded
+  recipe_obj = RecipeSearch.getInstance()
+  print ("UpdateInvertedIndex object :", recipe_obj)
+  assert(recipe_obj.indexObj.getIndexSize() > 0)
+  with open(scraped_file, 'rb') as f:
+    scraped_recipe_data = json.loads(f.read())
+    new_recipe_id = 2299999
+    ids = []
+    info = []
+    for recipe in scraped_recipe_data['data']:
+      recipe['id'] = new_recipe_id
+      #print("Title type : ", type(recipe['title']))
+      #print("Ingredients type : ", type(recipe['ingredients']))
+      doc_data = recipe['title'] + " " + ' '.join(recipe['ingredients'])
+      ids.append(recipe['id'])
+      info.append(doc_data)
+      #if new_recipe_id == 2300010:
+      #  break
+      new_recipe_id += 1
+   
+    print("Before update : " + str(recipe_obj.indexObj.getIndexSize()))
+    if len(ids) > 0:
+      recipe_obj.indexObj.updateIndex(ids, info)
+    print("After update : " + str(recipe_obj.indexObj.getIndexSize()))
+
+
 class RecipeSearch:
   indexObj = None
   modelObj = None
   __instance = None
   @staticmethod
   def isInstanceEmpty():
+    traceback.print_exc()
+    print ("Getting call in isInstanceEmpty()")
     return (RecipeSearch.__instance == None)
   
   @staticmethod
@@ -75,9 +109,62 @@ class RecipeSearch:
   
   
 
+  def getRecommendation(request):
+    recipe_id = request.GET.get("recipe_id")
+    print("Recipe ID: ",recipe_id)
+    print("Type Recipe ID: ",type(recipe_id))
+    recipe_obj = RecipeSearch.getInstance().getRecipeModelObj()
+    d = recipe_obj.get_recipe_by_id(int(recipe_id));
+    print(type(d))
+
+    recommendations = {"results" : []}
+    cluster_id = d["cluster_id"]
+    if(cluster_id != -1):
+      print(cluster_id)
+      result = recipe_obj.get_cluster_by_id(cluster_id)
+      doc_ids = result['doc_id']
+      docs = np.array(doc_ids)
+      # print(docs)
+      docs = np.delete(docs, np.where(docs == recipe_id)[0])
+      docs = np.random.choice(docs, size=5)
+      # print(docs)
+      recommendation_ids = docs.tolist()
+      print
+      recommendation_cursor = recipe_obj.get_multiple_recipes(recommendation_ids)
+      recommendation_list = list(recommendation_cursor)
+      for data in recommendation_list:
+          recommendations["results"].append(data)
+      recommendations_object = json.dumps(recommendations)
+      #print("List cursor: ",list_cursor)
+      # print("Recipes_object: ",recipes_object)
+    else:
+      recommendations_object = json.dumps({})
+      print ("Sorry! No recommendations found")
+    # recipes_object = json.dumps({})
+    return HttpResponse(recommendations_object) 
+  
+  def getNutritionValue(request):
+    nutritions = {"results" : []}
+    ingredients = request.GET.get("ingredient")
+    print(ingredients)
+    # ing_list = ingredients.replace("\"", "").replace("[","").replace("]","").split(", ")
+    ing_list = ingredients.split(' ')
+    recipe_obj = RecipeSearch.getInstance().getRecipeModelObj()
+    print(ing_list)
+    recipes_object = json.dumps({})
+    cursor = recipe_obj.get_multiple_nutrition_by_ingredient(ing_list);
+    list_cursor = list(cursor)
+
+    for data in list_cursor:
+        nutritions["results"].append(data)
+    nutrition_object = json.dumps(nutritions)
+
+    return HttpResponse(nutrition_object)
+
   def searchQueryResult(request):
     print ("Request method :", request.method)
     query = request.GET.get("query")
+    #search_type = request.GET.get("search_type")
     #print("Before expansion: ", query)
 
     ##########Query expansion########
@@ -117,13 +204,6 @@ class RecipeSearch:
     return HttpResponse(recipes_object) 
 
 
-      
-
-
-    
-
-
-
   def home(request):
     return HttpResponse("Hello World!")
     # recieved_var = testing_func("Whats-up")
@@ -135,6 +215,10 @@ class RecipeSearch:
   def customer(request):
     return HttpResponse('customer')
 
+  def scrapeRecipes(request):
+    if (RecipeSearch.isInstanceEmpty() == False):
+     updateIndvertedIndex(scraped_file_path)
+    return HttpResponse('Scraped Data')
 
 if (RecipeSearch.isInstanceEmpty()):
   recipe_obj = RecipeSearch.getInstance()
@@ -153,10 +237,9 @@ if (RecipeSearch.isInstanceEmpty()):
   ## Step 2: Load index in memory for searching query results
   start = time.time()
   recipe_obj.indexObj.loadIndexInMemory()
+  print ("Dictionary size loaded : ", recipe_obj.indexObj.getIndexSize())
   recipe_data = RecipeData.getInstance()
   print("Time taken to load dictionary: ", time.time() - start)
-  
-
 
 # Function to expand a query
 def expand_query(query):
