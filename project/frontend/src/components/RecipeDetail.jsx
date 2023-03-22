@@ -5,7 +5,8 @@ import ReactCardFlip from 'react-card-flip';
 
 //square
 const Square = (nutrition) => {
-   console.log(nutrition);
+   console.log("Nutrition square: ",nutrition);
+   console.log("Type of Nutrition: ",typeof nutrition);
    return (
      <div style={{ width: '400px', 
       height: '400px', 
@@ -18,7 +19,13 @@ const Square = (nutrition) => {
       boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)',
       background: 'grey'
    }}>
-     {}
+     <h2>Ingredient</h2>
+               <ul>
+                  {nutrition.map(
+                     (vals) => ( <h1>{vals.food_name}</h1>
+                  ))}
+               </ul>
+            
    </div>
    );
  };
@@ -72,15 +79,42 @@ function NutritionCalculator(props){
      
       setNutrition(nutrition_vals.results);
       //setFlips(getFlipInitialState(recipes.results.length));
+      console.log("Nutrition state: ", nutrition)
     }; 
     getNutrition(props.NER);
    }, [props.NER]);
+
+   if(!(nutrition.length)){
+      return (
+      <h1> Loading... </h1> 
+      );
+    }
+   else{
    return(
    <Display2>
       <h1>Nutrition Values are: </h1>
-      <Square/>
+
+      <div style={{ width: '400px', 
+      height: '400px', 
+      backgroundColor: 'red', 
+      margin: 'auto' ,
+      borderRadius: '10px',
+      // display: 'flex', 
+      // justifyContent: 'center', 
+      // alignItems: 'center',
+      boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)',
+      background: 'grey'
+   }}>
+     <h6>Ingredient</h6>
+         {nutrition.map(
+            (vals) => ( <ul>{vals.food_name}</ul>
+         ))}
+   
+   </div>
+
    </Display2>
    );
+         }
 }
 
 // below function is used to display the title, ingredients and recipe of the dish
