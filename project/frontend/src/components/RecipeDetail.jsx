@@ -4,31 +4,31 @@ import { useEffect, useState } from 'react';
 import ReactCardFlip from 'react-card-flip';
 
 //square
-const Square = (nutrition) => {
-   console.log("Nutrition square: ",nutrition);
-   console.log("Type of Nutrition: ",typeof nutrition);
-   return (
-     <div style={{ width: '400px', 
-      height: '400px', 
-      backgroundColor: 'red', 
-      margin: 'auto' ,
-      borderRadius: '10px',
-      // display: 'flex', 
-      // justifyContent: 'center', 
-      // alignItems: 'center',
-      boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)',
-      background: 'grey'
-   }}>
-     <h2>Ingredient</h2>
-               <ul>
-                  {nutrition.map(
-                     (vals) => ( <h1>{vals.food_name}</h1>
-                  ))}
-               </ul>
+// const Square = (nutrition) => {
+//    console.log("Nutrition square: ",nutrition);
+//    console.log("Type of Nutrition: ",typeof nutrition);
+//    return (
+//      <div style={{ width: '400px', 
+//       height: '400px', 
+//       backgroundColor: 'red', 
+//       margin: 'auto' ,
+//       borderRadius: '10px',
+//       // display: 'flex', 
+//       // justifyContent: 'center', 
+//       // alignItems: 'center',
+//       boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)',
+//       background: 'grey'
+//    }}>
+//      <h4>Ingredient</h4>
+//                <ul>
+//                   {nutrition.map(
+//                      (vals) => ( <h5>{vals.food_name}</h5>
+//                   ))}
+//                </ul>
             
-   </div>
-   );
- };
+//    </div>
+//    );
+//  };
 
 
 function Recommendations(props) {
@@ -46,9 +46,13 @@ function Recommendations(props) {
     };
     fetchData(props.id);
   }, [props.id]);
+  
 
   if (!data) {
-    return <div>No recommendations</div>;
+    return (   
+         <div >
+            <h2>You may also like</h2>
+            No recommendations were related to this recipe</div>);
   }
 
   return (
@@ -92,24 +96,53 @@ function NutritionCalculator(props){
    else{
    return(
    <Display2>
-      <h1>Nutrition Values are: </h1>
-
+      <h2 style={{ paddingTop: '55px' }}>Nutrition Values are: </h2>
       <div style={{ width: '400px', 
-      height: '400px', 
-      backgroundColor: 'red', 
-      margin: 'auto' ,
-      borderRadius: '10px',
+      // height: '400px', 
+      // backgroundColor: 'red', 
+      // margin: 'auto' ,
+      // borderRadius: '10px',
       // display: 'flex', 
       // justifyContent: 'center', 
       // alignItems: 'center',
-      boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)',
-      background: 'grey'
+      // boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)',
+      // background: 'grey'
    }}>
-     <h6>Ingredient</h6>
+
+      
+
+<table style={{
+   border: '5px solid',
+   borderCollapse: 'collapse',
+   margin: '25px',
+   fontSize: '0.9em',
+   fontFamily: 'sans-serif',
+   minWidth: '400px',
+   boxShadow: '0 0 20px rgba(0, 0, 0, 0.15)',
+   // marginLeft: 'auto',
+   // marginRight: 'auto'
+}}>
+  <tr>
+    <th style={{ border: '5px solid' }}><span><b>Ingredient</b></span></th>
+    <th style={{ border: '5px solid' }}><span><b>Total Calories</b></span></th>
+    <th style={{ border: '5px solid' }}><span><b>Total Protein</b></span></th>
+    <th style={{ border: '5px solid' }}><span><b>Total Fat</b></span></th>
+  </tr>
+  {nutrition.map(
+            (vals) => ( 
+               <tr>
+    <td style={{ border: '5px solid', textAlign:'right'}}>{vals.food_name}</td>
+    <td style={{ border: '5px solid' , textAlign:'right'}}>{vals.nf_calories}</td>
+    <td style={{ border: '5px solid', textAlign:'right' }}>{vals.nf_protein}</td>
+    <td style={{ border: '5px solid', textAlign: 'right' }}>{vals.nf_total_fat}</td>
+      </tr>
+         ))}
+</table>
+     {/* <h6>Ingredient</h6>
          {nutrition.map(
             (vals) => ( <ul>{vals.food_name}</ul>
-         ))}
-   
+         ))} */}
+   <span style={{marginLeft: '25px'}}><b><i>Unit: kcal</i></b></span>
    </div>
 
    </Display2>
@@ -139,7 +172,7 @@ function RecipeDetail() {
          
 
          setUrlParams({
-            title: title.replaceAll('%20',' ').replaceAll('%27','').replaceAll('%22',''),
+            title: title.replaceAll('%20',' ').replaceAll('%27','').replaceAll('%22','').replaceAll('\'',''),
             directions: directions.trim().slice(1,directions.trim().length-1),
             ingredients: ingredients.trim().slice(1, ingredients.trim().length - 1),
             id,
@@ -162,6 +195,7 @@ function RecipeDetail() {
 
    }, [])
 
+
    return (
       <Display>
          <Div>
@@ -181,7 +215,6 @@ function RecipeDetail() {
                </ul>
             </Grid>
          </Div>
-         
          <Div2>
          
            {urlParams.NER && <NutritionCalculator NER={urlParams.NER}/> }
@@ -205,7 +238,8 @@ width:50%;
 `;
 const Div2 = styled.div`
 float:right;
-align-items: left;
+align-items: center;
+justift-content: center;
 width:50%;
 `;
 
@@ -219,5 +253,7 @@ align-items: center;
 const Grid = styled.div`
 
 `; 
+
+
 
 export default RecipeDetail;

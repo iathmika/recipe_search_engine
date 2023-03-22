@@ -7,6 +7,7 @@ import RecipeDetail from './RecipeDetail';
 import { useNavigate } from "react-router-dom";
 // import Advsearch from "./Advsearch"
 // import "./Advsearch.css"  
+// import ReactPaginate from 'react-paginate';
 
 function Searched() {
   const [searchedRecipes, setSearchedRecipes] = useState([]);
@@ -91,11 +92,8 @@ function Searched() {
     newFlips[index] = !newFlips[index];
     setFlips(newFlips);
   }; 
-  //console.log("searched recipes: ",searchedRecipes);
-  //console.log("searched recipes length: ",searchedRecipes.length);
-  //console.log("type of recipes: ", typeof searchedRecipes);
-   
-    //console.log("returning cards");
+  
+    
 
   if(!(searchedRecipes.length)){
     return (
@@ -107,7 +105,10 @@ function Searched() {
   return (
       <Display> 
         <h1> Showing Search Results for "{query}" </h1>
+
         <Grid>
+
+           
           {searchedRecipes.map((recipe, index) => (
           <ReactCardFlip
             key={recipe.title}
@@ -117,9 +118,9 @@ function Searched() {
               onClick={() => 
                 handleClick(index,"front",'')}
               >
-                <Image> <img src="https://cdn.iconscout.com/icon/premium/png-128-thumb/recipe-book-2844299-2365212.png"></img>
-                </Image>
-                  <h3>{index + 1}. {recipe.title}</h3>
+                {/* <Image> <img src="https://cdn.iconscout.com/icon/premium/png-128-thumb/recipe-book-2844299-2365212.png"></img>
+                </Image> */}
+                  <h3 style={{ paddingTop: '115px' }}>{index + 1}. {recipe.title}</h3>
               </FrontCard>
               
               <BackCard 
@@ -145,7 +146,7 @@ function Searched() {
 } }
 
 const Display = styled.div`
-color: brown;
+color: white;
 align-items: center;
 h1{
   text-align: center;
@@ -161,16 +162,16 @@ a{
   color: black;
 }
 `; 
-const Image = styled.div`
+// const Image = styled.div`
 
-margin-left: 20px;
-margin-right: 20px;
-width: 40%;
-place-items: center;
-align-items: center;
-display: block;
-margin: auto;
-`
+// margin-left: 20px;
+// margin-right: 20px;
+// width: 40%;
+// place-items: center;
+// align-items: center;
+// display: block;
+// margin: auto;
+// `
 
 const Card = styled.div`
   img {
@@ -189,7 +190,12 @@ color:black;
 `;
 
 const FrontCard = styled(Card)`
-  background: ;
+a {
+      text-decoration: none;
+  color:black;
+    }
+  border: 1px solid;
+  background: #7B5912;
 
   height: 350px;
   padding: 25px;
