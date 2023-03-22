@@ -14,6 +14,7 @@ import csv
 import json
 from os.path import exists, join
 from pathlib import Path
+import shutil
 
 start = time.time()
 
@@ -49,8 +50,7 @@ def preProcessing(data):
     tmp_data = re.split('\W', data)
     #print ("stage 1 :", tmp_data)
     for word in tmp_data:
-        #if word == ""  or re.match('\d+', word):
-        if word == "":
+        if word == ""  or re.match('\d+', word):
             continue
         word = word.lower()
         if word in stop_word_list:
@@ -68,10 +68,6 @@ def build_index_internal(ids, info):
     for i in range(len(ids)):
         #Preprocessing the data of the document
         porter = preProcessing(info[i])
-        #tokens = tokenization(info[i])
-        #lower = case_folding(tokens)
-        #stop = remove_stop_words(lower)
-        #porter = porter_stemming(stop)
         document_id = ids[i]
         #Traversing the preprocessed data
         for j in range(len(porter)):
@@ -178,6 +174,80 @@ class InvertedIndex:
       f.write(json_data)
     self.docLenDict = doc_len_dict
  
+  def updateIndex(self, ids, info):
+    print("Getting a call inside updateIndex ....")
+    populateStopWords()
+    #Making Inverted Index
+    print('before preprocessing')
+    for i in range(len(ids)):
+      porter = preProcessing(info[i])
+      document_id = ids[i]
+      #Traversing the preprocessed data
+      for j in range(len(porter)):
+          word = porter[j]
+          #If the word is new adding it to dictionary with the docID and it's position
+          if(word not in self.dictdata):
+              self.dictdata[word] = Pair()
+              position = [j+1]
+              self.dictdata[word].details[document_id] = position
+          #Word is already present in the dictionary
+          else:
+              #If it is a new docID for the word add the docID and it's postition for that word
+              if(document_id not in self.dictdata[word].details):
+                  self.dictdata[word].doc_freq += 1
+                  position = [j+1]
+                  self.dictdata[word].details[document_id] = position
+              #Else if docID is already stored for the word then just append the position for that docID
+              #It means it's not the first time the word is seen in that docID
+              else:
+                  if (j+1) not in self.dictdata[word].details[document_id]:
+                    self.dictdata[word].details[document_id].append(j+1)
+       
+    ### Need to update the existing index_file
+    filename = "sample_index.json.bk"
+    index_backup = os.path.abspath(os.path.join(app_path, filename))
+    if index_backup.startswith(str(app_path)) and os.path.exists(index_backup):
+      os.remove(index_backup)
+    source = index_file_path
+    target = os.path.abspath(os.path.join(app_path, filename))
+    copy_success = True
+    ## adding exception handling
+    try:
+      shutil.copy(source, target)
+      print ("Index copy successful")
+    except IOError as e:
+      copy_success = False
+      print("Unable to copy file. %s" % e)
+    except:
+      copy_success = False
+      print("Unexpected error:", sys.exc_info())
+  
+    if copy_success == True:
+     loaded_dict = {}
+     print("loaded-dict length : ", len(loaded_dict))
+     #sorted_dict = dict(sorted(self.dictdata.items(),key = lambda item: item[0]))
+     #print("sorted-dict length : ", len(sorted_dict))
+     print("Check before index_file deletion")
+     ## Delete current index file
+     os.remove(index_file_path)
+     print("Problem arise after index_file deletion")
+     print("Can we still access index_file ", index_file_path)
+     print("loaded-dict length : ", len(loaded_dict))
+     for word in self.dictdata.keys():
+       loaded_dict[word] = self.dictdata[word].details
+     
+     print("loaded-dict length : ", len(loaded_dict))
+     #print("sorted-dict length : ", len(sorted_dict))
+
+     ## Write new index in dictionary
+     with open(index_file_path,'w') as f1:
+       f1.write(json.dumps(loaded_dict))
+     print("sample_index.json written successfully")
+    else:
+      ## index.json.bk should be set to current index in-case of failure 
+      shutil.copy(source, target)
+     
+
   def buildIndex(self):
     #Shivaz: Need to modify the parsing based on new recipe dataset 
     #Radhikesh: Commented the trec data and reading the data from recipe dataset
@@ -223,7 +293,7 @@ class InvertedIndex:
       assert(len(self.docLenDict) > 0)
  
   def loadIndexInMemory(self):
-    print('Getting a call here')
+    print('Getting a call here inside loadIndexInMemory')
     populateStopWords()
     #Using json file now
     with open(index_file_path, 'r') as f:
@@ -239,6 +309,7 @@ class InvertedIndex:
       d[key] = val
       
     self.dictdata = d
+   
     
   def computeAvgDocLen(self):
     avg_dl = 0
@@ -248,6 +319,7 @@ class InvertedIndex:
       for cnt in self.docLenDict.values():
         sum += cnt
     return int(sum/total_docs)
+
 
 #s.getIndexSize()
 #s.buildIndex()
