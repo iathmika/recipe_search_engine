@@ -28,10 +28,9 @@ scraped_file_path = os.path.join(app_path, 'scraped_recipies.json')
 print ("Index file path :" + index_file_path)
 
 ## By default TFIDF technique is used ##
-## 1 -> tfidf
-## 2 -> bm25
-## (!1 && !2) -> Boolean, Proximity, Phrase
-search_type = "tfidf"
+#search_type = "other" -> Boolean, Proximity, Phrase
+#search_type = "tfidf" -> TFIDF 
+#search_type = "bm25"  -> BM25
 
 ## This method reads the scraped data and updates the existing running index
 def updateIndvertedIndex(scraped_file):
@@ -39,6 +38,7 @@ def updateIndvertedIndex(scraped_file):
   recipe_obj = RecipeSearch.getInstance()
   print ("UpdateInvertedIndex object :", recipe_obj)
   assert(recipe_obj.indexObj.getIndexSize() > 0)
+  scraped_recipes_added = []
   with open(scraped_file, 'rb') as f:
     scraped_recipe_data = json.loads(f.read())
     new_recipe_id = 2299999
@@ -46,6 +46,7 @@ def updateIndvertedIndex(scraped_file):
     info = []
     for recipe in scraped_recipe_data['data']:
       recipe['id'] = new_recipe_id
+      scraped_recipes_added.append(recipe['title'])
       #print("Title type : ", type(recipe['title']))
       #print("Ingredients type : ", type(recipe['ingredients']))
       doc_data = recipe['title'] + " " + ' '.join(recipe['ingredients'])
@@ -59,6 +60,8 @@ def updateIndvertedIndex(scraped_file):
     if len(ids) > 0:
       recipe_obj.indexObj.updateIndex(ids, info)
     print("After update : " + str(recipe_obj.indexObj.getIndexSize()))
+    if (len(scraped_recipes_added) != 0):
+      return scraped_recipes_added
 
 
 class RecipeSearch:
@@ -222,9 +225,12 @@ class RecipeSearch:
     return HttpResponse('customer')
 
   def scrapeRecipes(request):
+    rsl = "Recipes Added Into Live Index : "
     if (RecipeSearch.isInstanceEmpty() == False):
-     updateIndvertedIndex(scraped_file_path)
-    return HttpResponse('Scraped Data')
+      scraped_recipes = updateIndvertedIndex(scraped_file_path)
+      for r in scraped_recipes:
+        rsl += r + " , " 
+    return HttpResponse(rsl)
 
 if (RecipeSearch.isInstanceEmpty()):
   recipe_obj = RecipeSearch.getInstance()
