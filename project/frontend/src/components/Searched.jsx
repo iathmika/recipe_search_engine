@@ -35,14 +35,17 @@ function Searched() {
     const data = await fetch(`http://localhost:8000/search/?query=${name}&searchtype=${type}`);
     
     const recipes = await data.json();
+
+    console.log("Recipes:", recipes)
     
     console.log("recipes : ",recipes);
-    console.log("recipes length: ",recipes.results);
+    // console.log("recipes length: ",recipes.results);
 
     
     setSearchedRecipes(recipes.results);
     setFlips(getFlipInitialState(recipes.results.length));
   }; 
+
   
   useEffect(() => {
     getSearched(params.search);
@@ -95,7 +98,8 @@ function Searched() {
   
     
 
-  if(!(searchedRecipes.length)){
+  if(searchedRecipes == null){
+    // console.log("Hello!!!!!!!!!!");
     return (
     <h1> </h1> 
     );
