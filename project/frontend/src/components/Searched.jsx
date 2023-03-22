@@ -5,8 +5,8 @@ import ReactCardFlip from 'react-card-flip';
 import { FaExternalLinkAlt } from "react-icons/fa";
 import RecipeDetail from './RecipeDetail';
 import { useNavigate } from "react-router-dom";
-import Advsearch from "./Advsearch"
-import "./Advsearch.css"  
+// import Advsearch from "./Advsearch"
+// import "./Advsearch.css"  
 
 function Searched() {
   const [searchedRecipes, setSearchedRecipes] = useState([]);
@@ -24,7 +24,7 @@ function Searched() {
   const navigator = useNavigate();
   const getSearched = async (input) => {
     console.log("type: ");
-    console.log(Advsearch.searchtype);
+    // console.log(Advsearch.searchtype);
     const params = input.split("&");
     const name = params[0];
     const type = params[1];

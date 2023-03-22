@@ -6,8 +6,8 @@ import { useNavigate } from "react-router-dom";
 import image from "../images/bg.jpeg";
 import Button from "./Button"
 import React from "react";
-import Advsearch from "./Advsearch"
-import "./Advsearch.css"  
+// import Advsearch from "./Advsearch"
+// import "./Advsearch.css"  
 import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 

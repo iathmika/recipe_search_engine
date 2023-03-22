@@ -28,6 +28,8 @@ function Recommendations(props) {
   useEffect(() => {
     const fetchData = async (id) => {
       //fetch the data
+      id = id.replace(/\D/g,'');
+      console.log(id);
       const response = await fetch(`http://localhost:8000/recommendations/?recipe_id=${id}`);
       //store the data
       const responseData = await response.json();

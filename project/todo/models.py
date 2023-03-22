@@ -43,7 +43,7 @@ class RecipeData:
     
     #Getting multiple recipes
     def get_multiple_recipes(self, recipe_ids):
-        recipe = self._collection.find({"id": { "$in": recipe_ids }},{"id":1, "title":1, "ingredients":1,"directions":1,"_id": False})
+        recipe = self._collection.find({"id": { "$in": recipe_ids }},{"_id": False})
         return recipe
 
     def update_recipe(self, recipe_id, title=None, ingredients=None, directions=None, link=None, source=None, NER=None):

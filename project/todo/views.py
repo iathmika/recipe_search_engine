@@ -146,9 +146,9 @@ class RecipeSearch:
   def getNutritionValue(request):
     nutritions = {"results" : []}
     ingredients = request.GET.get("ingredient")
-    print(ingredients)
-    # ing_list = ingredients.replace("\"", "").replace("[","").replace("]","").split(", ")
-    ing_list = ingredients.split(' ')
+    #print(ingredients)
+    ing_list = ingredients.replace("\"", "").replace("[","").replace("]","").split(", ")
+    #ing_list = ingredients.split(' ')
     recipe_obj = RecipeSearch.getInstance().getRecipeModelObj()
     print(ing_list)
     recipes_object = json.dumps({})
