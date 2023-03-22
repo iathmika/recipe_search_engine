@@ -146,13 +146,15 @@ class RecipeSearch:
   def getNutritionValue(request):
     nutritions = {"results" : []}
     ingredients = request.GET.get("ingredient")
-    #print(ingredients)
+
+    print("Ingredients: ",ingredients)
+    print("ingredients type ",type(ingredients))
     ing_list = ingredients.replace("\"", "").replace("[","").replace("]","").split(", ")
     #ing_list = ingredients.split(' ')
     recipe_obj = RecipeSearch.getInstance().getRecipeModelObj()
     print(ing_list)
-    recipes_object = json.dumps({})
-    cursor = recipe_obj.get_multiple_nutrition_by_ingredient(ing_list);
+    #recipes_object = json.dumps({})
+    cursor = recipe_obj.get_multiple_nutrition_by_ingredient(ing_list)
     list_cursor = list(cursor)
 
     for data in list_cursor:
@@ -163,7 +165,7 @@ class RecipeSearch:
 
   def searchQueryResult(request):
     query = request.GET.get("query")
-    search_type = request.GET.get("search_type")
+    search_type = request.GET.get("searchtype")
    
     #print ("search_type : ", search_type)
     #print ("Before expansion: ", query)
@@ -173,7 +175,7 @@ class RecipeSearch:
       query = expand_query(query)
 
     #print ("After expansion: ", query)
-
+    rsl = "tfidf" #default value for rsl
     index_obj = RecipeSearch.getInstance().getRecipeIndexObj()
     recipe_obj = RecipeSearch.getInstance().getRecipeModelObj()
     start = time.time()

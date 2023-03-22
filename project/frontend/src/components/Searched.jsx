@@ -16,6 +16,7 @@ function Searched() {
   const [recipeName, setRecipeName] = useState('');
   const [recipeIngredients, setRecipeIngredients] = useState(null);
   const [recipeDirections, setRecipeDirections] = useState(null);
+  const [recipeNER, setRecipeNER] = useState(null);
   const [query, setQuery] = useState(null);
   const getFlipInitialState = (num) => {
     const initialState = Array(num).fill(false);
@@ -46,13 +47,14 @@ function Searched() {
     getSearched(params.search);
   }, [params.search]);
   
-  const handleClick = (index, type, id, recipeTitle, recipeIngredients, recipeDirections) => {
+  const handleClick = (index, type, id, recipeTitle, recipeIngredients, recipeDirections,recipeNER) => {
     if(type == "back"){
       
       setRecipeCardClick(true)
       setRecipeName(recipeTitle)
       setRecipeIngredients(recipeIngredients)
-      
+      setRecipeNER(recipeNER)
+      console.log("recipeNER: "+recipeNER)
       setRecipeDirections(recipeDirections)
       // const updatedRecipeTitle = recipeTitle.replaceAll(" ", '-')
       const updatedRecipeTitle = recipeTitle.replaceAll(" ", '-').replaceAll("/", "")
@@ -61,6 +63,7 @@ function Searched() {
         recipeTitle: updatedRecipeTitle,
         recipeDirection: recipeDirections,
         recipeIngredients: recipeIngredients,
+        recipeNER: recipeNER,
       };
       /*
       fetch(`/recipeDetail/${updatedRecipeTitle}/` ,{
@@ -80,7 +83,7 @@ function Searched() {
         });
         */
       navigator(`/recipe-detail/${updatedRecipeTitle}?recipeTitle='${recipeTitle}'&recipeDirection='${recipeDirections}'
-      &recipeIngredients='${recipeIngredients}'&recipeID='${id}'`);
+      &recipeIngredients='${recipeIngredients}'&recipeID='${id}'&recipeNER='${recipeNER}'`);
      //http://localhost:3000/recipe-detail/$%7BupdatedRecipeTitle%7D/
      //http://localhost:3000/recipe-detail/Vanilla-Ice-Cream/
     }
@@ -100,6 +103,7 @@ function Searched() {
     );
   }
   else {
+    console.log("recipe.NER is "+ searchedRecipes.NER);
   return (
       <Display> 
         <h1> Showing Search Results for "{query}" </h1>
@@ -117,8 +121,10 @@ function Searched() {
                 </Image>
                   <h3>{index + 1}. {recipe.title}</h3>
               </FrontCard>
+              
               <BackCard 
-              onClick={() => handleClick(index,"back", recipe.id, recipe.title, recipe.ingredients, recipe.directions)}
+             
+              onClick={() => handleClick(index,"back", recipe.id, recipe.title, recipe.ingredients, recipe.directions, recipe.NER)}
               onMouseLeave={() => handleClick(index,"front",'')}
               >               
                 <h6> 

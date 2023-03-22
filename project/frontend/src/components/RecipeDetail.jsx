@@ -4,7 +4,8 @@ import { useEffect, useState } from 'react';
 import ReactCardFlip from 'react-card-flip';
 
 //square
-const Square = () => {
+const Square = (nutrition) => {
+   console.log(nutrition);
    return (
      <div style={{ width: '400px', 
       height: '400px', 
@@ -17,6 +18,7 @@ const Square = () => {
       boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)',
       background: 'grey'
    }}>
+     {}
    </div>
    );
  };
@@ -55,15 +57,30 @@ function Recommendations(props) {
 }
 
 // nutrition function
-function NutritionCalculator(){
+function NutritionCalculator(props){
+   const [nutrition, setNutrition] = useState("");
 
-
+   useEffect(() => {
+   const getNutrition = async (NER) => {
+      console.log("NER is ");
+      console.log(NER);
+      NER = NER.replace(/\'/g,'');
+      const data = await fetch(`http://localhost:8000/nutrition/?ingredient=${NER}`);
+      const nutrition_vals = await data.json();     
+      console.log("Nutrition : ",nutrition_vals);
+      console.log("nutrition results length ",nutrition_vals.results);
+     
+      setNutrition(nutrition_vals.results);
+      //setFlips(getFlipInitialState(recipes.results.length));
+    }; 
+    getNutrition(props.NER);
+   }, [props.NER]);
    return(
    <Display2>
-      <h1>Nutrition Values</h1>
+      <h1>Nutrition Values are: </h1>
       <Square/>
    </Display2>
-   )
+   );
 }
 
 // below function is used to display the title, ingredients and recipe of the dish
@@ -71,7 +88,7 @@ function RecipeDetail() {
    const [recipeName, setRecipeName] = useState('')
    const [recipeDirections, setRecipeDirections] = useState('[]')
    const [recipeIngredients, setRecipeIngredients] = useState('[]')
-   const [urlParams, setUrlParams] = useState({directions:null, id:null, ingredients:null})
+   const [urlParams, setUrlParams] = useState({directions:null, id:null, ingredients:null, NER:null})
    const searchParams = useSearchParams()
 
    useEffect(() => {
@@ -82,12 +99,17 @@ function RecipeDetail() {
          const title = queryParams.get('recipeTitle')
          const ingredients = queryParams.get('recipeIngredients')
          const id = queryParams.get('recipeID')
+         const NER = queryParams.get('recipeNER');
+         console.log("NER inside RecipeDetail: ");
+         console.log(NER);
+         
 
          setUrlParams({
             title: title.replaceAll('%20',' ').replaceAll('%27','').replaceAll('%22',''),
             directions: directions.trim().slice(1,directions.trim().length-1),
             ingredients: ingredients.trim().slice(1, ingredients.trim().length - 1),
-            id
+            id,
+            NER
          })
       }
 
@@ -125,8 +147,10 @@ function RecipeDetail() {
                </ul>
             </Grid>
          </Div>
+         
          <Div2>
-            <NutritionCalculator/>
+         
+           {urlParams.NER && <NutritionCalculator NER={urlParams.NER}/> }
             <br></br>
             {urlParams.id && <Recommendations id={urlParams.id} />}
          </Div2>
