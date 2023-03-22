@@ -35,8 +35,6 @@ function App() {
             </Nav>
            
           </div>   
-            
-            <Category /> 
       </div>
          <Pages />
          

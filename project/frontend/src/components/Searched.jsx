@@ -13,9 +13,10 @@ function Searched() {
   let params = useParams();
   const [flips, setFlips] = useState([]);
   const [recipeCardClick, setRecipeCardClick] = useState(false);
-  const [recipeName, setRecipeName] = useState('')
-  const [recipeIngredients, setRecipeIngredients] = useState(null)
-  const [recipeDirections, setRecipeDirections] = useState(null)
+  const [recipeName, setRecipeName] = useState('');
+  const [recipeIngredients, setRecipeIngredients] = useState(null);
+  const [recipeDirections, setRecipeDirections] = useState(null);
+  const [query, setQuery] = useState(null);
   const getFlipInitialState = (num) => {
     const initialState = Array(num).fill(false);
     return initialState;
@@ -27,6 +28,7 @@ function Searched() {
     // console.log(Advsearch.searchtype);
     const params = input.split("&");
     const name = params[0];
+    setQuery(name);
     const type = params[1];
     const data = await fetch(`http://localhost:8000/search/?query=${name}&searchtype=${type}`);
     
@@ -100,7 +102,7 @@ function Searched() {
   else {
   return (
       <Display> 
-        <h1> {recipeName !== '' ? recipeName : 'Here are your recipes'} </h1>
+        <h1> Showing Search Results for "{query}" </h1>
         <Grid>
           {searchedRecipes.map((recipe, index) => (
           <ReactCardFlip
@@ -111,19 +113,21 @@ function Searched() {
               onClick={() => 
                 handleClick(index,"front",'')}
               >
+                <Image> <img src="https://cdn.iconscout.com/icon/premium/png-128-thumb/recipe-book-2844299-2365212.png"></img>
+                </Image>
                   <h3>{index + 1}. {recipe.title}</h3>
               </FrontCard>
               <BackCard 
               onClick={() => handleClick(index,"back", recipe.id, recipe.title, recipe.ingredients, recipe.directions)}
               onMouseLeave={() => handleClick(index,"front",'')}
               >               
-                <h5> 
+                <h6> 
                   <ul>
                     {JSON.parse(recipe.ingredients).map(
                         (ingredient) => (<li>{ingredient}</li>)
                     )}
                   </ul>
-                 </h5> 
+                 </h6> 
                  <h5>Click to get directions</h5>
               </BackCard>
             </ReactCardFlip>
@@ -137,17 +141,30 @@ function Searched() {
 const Display = styled.div`
 color: brown;
 align-items: center;
+h1{
+  text-align: center;
+}
 `;
 
 const Grid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
   grid-gap: 1.5rem;
+align-items: center;
 a{
-  color: black'
+  color: black;
 }
 `; 
+const Image = styled.div`
 
+margin-left: 20px;
+margin-right: 20px;
+width: 40%;
+place-items: center;
+align-items: center;
+display: block;
+margin: auto;
+`
 
 const Card = styled.div`
   img {
@@ -166,19 +183,25 @@ color:black;
 `;
 
 const FrontCard = styled(Card)`
-  background: #7B5912;
-  color: white;
-  height: 300px;
-  padding: 85px;
+  background: ;
+
+  height: 350px;
+  padding: 25px;
   border-radius: 1rem;
   font-size: 40px;
   font-family: "Ink Free", sans-serif;
   font-weight:600;
   text-align: center;
-  margin: 20px;
+align-items: center;
+  margin: 10px;
   cursor: pointer;
 overflow-y: scroll;
   opacity:0.75;
+  border: 1px solid;
+  transform-style: preserve-3d;
+  transition: -webkit-transform ease 500ms;
+  transition: transform ease 500ms;
+  box-shadow: 10px 10px 5px rgb(95, 77, 99);
 `;
 const Heading = styled.h1`
   font-size: 2.5rem;
@@ -191,9 +214,10 @@ a {
       text-decoration: none;
   color:black;
     }
+  border: 1px solid;
   background: #7B5912;
   color: white;
-  height: 300px;
+  height: 350px;
   padding: 20px;
   border-radius: 1rem;
   font-size: 40px;
@@ -204,6 +228,22 @@ a {
   cursor: pointer;
 overflow-y: scroll;
 opacity:0.75;
+transform-style: preserve-3d;
+transition: -webkit-transform ease 500ms;
+transition: transform ease 500ms;
+box-shadow: 10px 10px 5px rgb(95, 77, 99);
+h5{
+  text-align: center;
+  text-shadow: 1px 1px 1px #919191,
+        1px 2px 1px #919191,
+        1px 3px 1px #919191,
+        1px 4px 1px #919191,
+    1px 8px 6px rgba(16,16,16,0.4),
+    1px 1px 1px rgba(16,16,16,0.2),
+    1px 8px 5px rgba(16,16,16,0.2),
+    1px 1px 1px rgba(16,16,16,0.4);
+}
+
 `; 
 
 export default Searched;
