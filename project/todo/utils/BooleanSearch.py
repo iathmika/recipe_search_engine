@@ -79,7 +79,7 @@ def boolean_search(query, indexObj):
                 else:
                     curr = ans.union(curr) #OR operation
             ans = curr
-    print(ans)
+    #print(ans)
     return ans
         #If the query has output then sort on basis of document IDs and store it in the file
         # if(ans):                   
