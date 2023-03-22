@@ -162,17 +162,17 @@ class RecipeSearch:
     return HttpResponse(nutrition_object)
 
   def searchQueryResult(request):
-    print ("Request method :", request.method)
     query = request.GET.get("query")
-    #search_type = request.GET.get("search_type")
-    #print("Before expansion: ", query)
+    search_type = request.GET.get("search_type")
+   
+    #print ("search_type : ", search_type)
+    #print ("Before expansion: ", query)
 
     ##########Query expansion########
-    query = expand_query(query)
+    if (search_type != "other"):
+      query = expand_query(query)
 
-    #print("After expansion: ", query)
-
-
+    #print ("After expansion: ", query)
 
     index_obj = RecipeSearch.getInstance().getRecipeIndexObj()
     recipe_obj = RecipeSearch.getInstance().getRecipeModelObj()
@@ -183,9 +183,13 @@ class RecipeSearch:
       rsl = RankSearch.rankByBM25(query, index_obj)
     elif (search_type == "other"):
       rsl = BooleanSearch.boolean_search(query, index_obj)
+    
     if rsl!=None:
       recipes = {"results" : []}
-      recipes_cursor = recipe_obj.get_multiple_recipes(list(rsl.keys())[:300])
+      if (search_type == "other"):
+           recipes_cursor = recipe_obj.get_multiple_recipes(list(rsl)[:300])
+      else:
+           recipes_cursor = recipe_obj.get_multiple_recipes(list(rsl.keys())[:300])
       
       list_cursor = list(recipes_cursor)
       start = time.time()

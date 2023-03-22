@@ -3,6 +3,12 @@
 
 <form action="{% url 'search_result' %}" method="get">
   <input name="query" type="text" placeholder="Search...">
+  <label for="cars">Query Search Type:</label>
+  <select name="search_type" id="search">
+    <option value="other">Other</option>
+    <option value="tfidf">TFIDF</option>
+    <option value="bm25">BM25</option>
+  </select>
   <input type="submit" value="Find!">
 </form>
 
