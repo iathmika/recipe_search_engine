@@ -163,7 +163,7 @@ class RecipeSearch:
 
   def searchQueryResult(request):
     query = request.GET.get("query")
-    search_type = request.GET.get("searchtype")
+    search_type = request.GET.get("search_type")
    
     #print ("search_type : ", search_type)
     #print ("Before expansion: ", query)
@@ -244,7 +244,7 @@ if (RecipeSearch.isInstanceEmpty()):
   ## Step 2: Load index in memory for searching query results
   start = time.time()
   recipe_obj.indexObj.loadIndexInMemory()
-  recipe_obj.index_obj.loadDocLenDictInMemory()
+  recipe_obj.indexObj.loadDocLenDictInMemory()
   print ("Dictionary size loaded : ", recipe_obj.indexObj.getIndexSize())
   recipe_data = RecipeData.getInstance()
   print("Time taken to load dictionary: ", time.time() - start)
