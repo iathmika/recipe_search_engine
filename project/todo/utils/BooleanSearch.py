@@ -8,7 +8,7 @@ def boolean_search(query, indexObj):
     # query = query.replace('\n','') #Replacing new line in readlines with nothing
     ans = set() #Set to store final document IDs for the query search
     # full = set(ids) # Set which has Document IDs for the whole collection
-    full = fetchAllDocIds(d)
+    full = indexObj.getDocLenDict().keys()
     query = query.replace('"','')
     res = re.split(' |, |,', query)
     # query_no = res.pop(0) #Storing query number by popping first element of query as first element is query_num

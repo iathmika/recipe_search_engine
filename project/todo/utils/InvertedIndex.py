@@ -21,7 +21,7 @@ start = time.time()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 app_path = Path(__file__).resolve().parent.parent
 print(" app_path name : ", app_path)
-index_file_path = os.path.join(app_path, 'sample_index.json')
+index_file_path = os.path.join(app_path, 'index.json')
 print(" index file path: ", index_file_path)
 trec_file_path = os.path.join(app_path, 'trec.5000.xml')
 stop_words_file = os.path.join(app_path, 'englishST.txt')
@@ -289,7 +289,10 @@ class InvertedIndex:
  
   def loadDocLenDictInMemory(self):
     with open(doc_len_file, 'rb') as f:
-      self.docLenDict = json.loads(f.read())
+      # self.docLenDict = json.loads(f.read())
+      d = json.loads(f.read())
+      for k in d.keys():
+        self.docLenDict[int(k)] = d[k]
       assert(len(self.docLenDict) > 0)
  
   def loadIndexInMemory(self):

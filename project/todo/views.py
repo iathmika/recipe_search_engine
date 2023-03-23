@@ -22,7 +22,7 @@ import numpy as np
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 app_path = Path(__file__).resolve().parent
-index_file_path = os.path.join(app_path, 'sample_index.json')
+index_file_path = os.path.join(app_path, 'index.json')
 scraped_file_path = os.path.join(app_path, 'scraped_recipies.json')
 
 print ("Index file path :" + index_file_path)
@@ -145,12 +145,12 @@ class RecipeSearch:
     nutritions = {"results" : []}
     ingredients = request.GET.get("ingredient")
 
-    print("Ingredients: ",ingredients)
-    print("ingredients type ",type(ingredients))
+    #print("Ingredients: ",ingredients)
+    #print("ingredients type ",type(ingredients))
     ing_list = ingredients.replace("\"", "").replace("[","").replace("]","").split(", ")
     #ing_list = ingredients.split(' ')
     recipe_obj = RecipeSearch.getInstance().getRecipeModelObj()
-    print(ing_list)
+    #print(ing_list)
     #recipes_object = json.dumps({})
     cursor = recipe_obj.get_multiple_nutrition_by_ingredient(ing_list)
     list_cursor = list(cursor)
@@ -169,36 +169,42 @@ class RecipeSearch:
     #print ("Before expansion: ", query)
 
     ##########Query expansion########
-    if (search_type != "other"):
-      query = expand_query(query)
+    #start = time.time()
+    # if (search_type != "other"):
+      # query = expand_query(query)
+    #print("Query Expansion Time: ", time.time() - start)
 
     #print ("After expansion: ", query)
     rsl = None #default value for rsl
     index_obj = RecipeSearch.getInstance().getRecipeIndexObj()
     recipe_obj = RecipeSearch.getInstance().getRecipeModelObj()
-    start = time.time()
+    #start = time.time()
     if (search_type == "tfidf"):
       rsl = RankSearch.rankByTFIDF(query, index_obj)
     elif (search_type == "bm25"):
       rsl = RankSearch.rankByBM25(query, index_obj)
     elif (search_type == "other"):
       rsl = BooleanSearch.boolean_search(query, index_obj)
-    
+    #print("RSL Population Time: ", time.time() - start)
+    #start = time.time()
     if rsl!=None:
       recipes = {"results" : []}
       if (search_type == "other"):
            recipes_cursor = recipe_obj.get_multiple_recipes(list(rsl)[:300])
       else:
            recipes_cursor = recipe_obj.get_multiple_recipes(list(rsl.keys())[:300])
-      
+      #print("Fetching data from mongo: ", time.time() - start)
+
+      #start = time.time()
       list_cursor = list(recipes_cursor)
-      start = time.time()
       for data in list_cursor:
           recipes["results"].append(data)
-      print("Loop time: ", time.time() - start)
+      #print("Iterating data from mongo: ", time.time() - start)
       # print("List cursor: ",list_cursor)
       # recipes["results"] = dumps(list_cursor, indent = 2)
+      #start = time.time()
       recipes_object = json.dumps(recipes)
+      #print("JSON  dumps: ", time.time() - start)
       #print("List cursor: ",list_cursor)
       # print("Recipes_object: ",recipes_object)
     else:
@@ -231,6 +237,7 @@ if (RecipeSearch.isInstanceEmpty()):
   recipe_obj = RecipeSearch.getInstance()
   recipe_obj.indexObj = InvertedIndex.getInvertedIndexObj()
   recipe_obj.modelObj = RecipeData.getInstance()
+
 
   print("Recipe object: ", recipe_obj)
   print("Index object: ", recipe_obj.indexObj)

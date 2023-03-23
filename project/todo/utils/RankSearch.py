@@ -3,103 +3,53 @@ from .InvertedIndex import preProcessing
 from sortedcontainers import SortedSet
 import math
 import itertools
-
-#index_dict = {}
-# ****START: Some basic utils for avoiding code replication **** #
-
-# Method to return term frequency in a particular document
-# Return -1 if term does not exist in given doc
-def getTermFreqInDoc(term, docId, index_dict):
-    if term in index_dict:
-        pair_val = index_dict[term]
-        # print(pair_val.details)
-        # print("Freq: ", pair_val.doc_freq)
-        if docId in pair_val.details:
-            # print("doc_id : "+ str(docId) +  " " + str(len(pair_val.details[docId])))
-            return len(pair_val.details[docId])
-
-    return -1
-
-#def getTermFreqInDoc(term, docId):
-#    if term in index_dict:
-#        if docId in index_dict[term]:
-#            return len(index_dict[term][docId])
-#
-#    return -1 
-   
-# Method to return list of all document ids in the collection
-def fetchAllDocIds(index_dict):
-    rsl = SortedSet()
-    if len(index_dict) > 0:
-        for k,vpair in index_dict.items():
-            for did in vpair.details.keys():
-                rsl.add(int(did))
-    return rsl
-
-#def fetchAllDocIds():
-#    rsl = SortedSet()
-#    if len(index_dict) > 0:
-#        for k,v in index_dict.items():
-#            for did in v.keys():
-#                rsl.add(int(did))
-#    return rsl
-
-# Method to return list of document ids where a specific term is present
-# If negation = false -> Return (Set of document ids where term is present)
-# If negation = true  -> Return ((Set of all document ids) - (Set of document ids where term is present))
-def fetchDocIds(term, is_negation, index_dict):
-    rsl = SortedSet()
-    if term in index_dict:
-        vpair = index_dict[term]
-        # print("Size vpair: ", len(vpair.details))
-        for d in vpair.details.keys():
-            rsl.add(int(d))
-
-    if is_negation == True:
-       all_ids = fetchAllDocIds(index_dict)
-       if len(all_ids) > 0 and len(rsl) > 0:
-           rsl = all_ids.difference(rsl)
-
-    return rsl
-
-# ****END: Some basic utils for avoiding code replication **** #
+import time
 
 ## Method for computing the TFIDF and BM25 score for a query with respect to a document id
 ## Results are sorted in descending order of the score
 def processRankedQuery(query, indexObj, search_type):
+  print ("Getting a call inside in processRankedQuery")
   index_dict = indexObj.getIndexDict()
   doc_len_dict = indexObj.getDocLenDict()
+
   new_score = 0
+  docs_cnt = indexObj.getDocLenSize()
   ## Required for bm25 
-  if (search_type == 0): 
+  if (search_type == 0):
     doc_len_dict = indexObj.getDocLenDict()
-    docs_cnt = indexObj.getDocLenSize()
 
   print ("Length of dictionary ", len(index_dict))
+  #start = time.time()
   terms_list = preProcessing(query)
-  print(terms_list)
-  tmp = set()
+  #print("Preprocessing runtime: ", time.time() - start)
+#   print(terms_list)
   rsl = {}
   if (len(terms_list) > 0):
       for term in terms_list:
-          tmp = fetchDocIds(term, False, index_dict)
-          dft = len(tmp)
+        #  start = time.time()
+        #   print ("In the main : ", id(index_dict))
+          if (term not in index_dict): continue
+          dft = index_dict[term].doc_freq
+        # print ("Document count : ", dft)
           if dft > 0:
-              for doc_id in tmp:
-                  tfd = getTermFreqInDoc(term, doc_id, index_dict)
+              #start = time.time()
+              for doc_id in index_dict[term].details:
+                  tfd = len(index_dict[term].details[doc_id])
                   if (search_type == 1):
                     ## Compute TFIDF score
-                    new_score = (1 + math.log10(tfd)) * math.log10(5000/dft)
+                    new_score = (1 + math.log10(tfd)) * math.log10(docs_cnt/dft)
                   else:
                     ## Compute score for BM25
-                    if str(doc_id) in doc_len_dict.keys():
-                      new_score  = score_BM25(docs_cnt , dft, tfd, 1.5, doc_len_dict[str(doc_id)], 48)
+                    new_score  = score_BM25(docs_cnt , dft, tfd, 1.5, doc_len_dict[doc_id], 48)
                   cur_score = 0
                   if doc_id in rsl:
                       cur_score = rsl[doc_id]
                   rsl[doc_id] = cur_score + new_score
+          #print (f"Iterating sub loop , Term {term} : time : {time.time() - start}")
   if len(rsl) > 0:
+    #start = time.time() 
     sorted_dict = dict(sorted(rsl.items(), key=lambda item: item[1]))
+    #print (f"Sorting time : {time.time() - start}")
     return sorted_dict
 
 def score_BM25(doc_nums, doc_nums_term, term_freq, k1, dl, avgdl):
