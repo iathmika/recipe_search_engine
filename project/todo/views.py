@@ -22,7 +22,7 @@ import numpy as np
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 app_path = Path(__file__).resolve().parent
-index_file_path = os.path.join(app_path, 'index.json')
+index_file_path = os.path.join(app_path, 'sample_index.json')
 scraped_file_path = os.path.join(app_path, 'scraped_recipies.json')
 
 print ("Index file path :" + index_file_path)

@@ -1,5 +1,4 @@
 from porter2stemmer import Porter2Stemmer
-from .RankSearch import fetchAllDocIds
 import re
 stemmer = Porter2Stemmer()
 
