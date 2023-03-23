@@ -102,14 +102,9 @@ class RecipeSearch:
     ## Need to create landing page to show the user
     template = loader.get_template('landing.html')
     index_obj = RecipeSearch.getInstance().getRecipeIndexObj()
-    
-    index_obj.loadDocLenDictInMemory()
-    #print ("Loaded document len dictionary size: ", indexObj.getDocLenDict())
-    
     indx_size = str(index_obj.getIndexSize())
     print(" indx_size : ", indx_size)
     return HttpResponse(template.render())
-  
   
 
   def getRecommendation(request):
@@ -178,7 +173,7 @@ class RecipeSearch:
       query = expand_query(query)
 
     #print ("After expansion: ", query)
-    rsl = "tfidf" #default value for rsl
+    rsl = None #default value for rsl
     index_obj = RecipeSearch.getInstance().getRecipeIndexObj()
     recipe_obj = RecipeSearch.getInstance().getRecipeModelObj()
     start = time.time()
@@ -249,6 +244,7 @@ if (RecipeSearch.isInstanceEmpty()):
   ## Step 2: Load index in memory for searching query results
   start = time.time()
   recipe_obj.indexObj.loadIndexInMemory()
+  recipe_obj.index_obj.loadDocLenDictInMemory()
   print ("Dictionary size loaded : ", recipe_obj.indexObj.getIndexSize())
   recipe_data = RecipeData.getInstance()
   print("Time taken to load dictionary: ", time.time() - start)

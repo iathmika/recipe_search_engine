@@ -71,7 +71,7 @@ def processRankedQuery(query, indexObj, search_type):
   doc_len_dict = indexObj.getDocLenDict()
   new_score = 0
   ## Required for bm25 
-  if (type == 0): 
+  if (search_type == 0): 
     doc_len_dict = indexObj.getDocLenDict()
     docs_cnt = indexObj.getDocLenSize()
 
