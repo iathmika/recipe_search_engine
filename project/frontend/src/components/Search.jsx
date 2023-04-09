@@ -11,45 +11,44 @@ import React from "react";
 import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 
-
 function Search() {
   const [input, setInput] = useState("");
   const [state, setstate] = useState(false);
   const [searchtype, setSearchtype] = useState("tfidf");
-
+  const [isChecked, setIsChecked] = useState(false);
+  const Checkbox = ({ label, checked, ...props }) => {
+   //const defaultChecked = checked ? checked : false;
+    //const [isChecked, setIsChecked] = useState(defaultChecked);
+  const handleOnChange = () => {
+      setIsChecked(!isChecked);
+    };
+      
+    return (
+          <div className="checkbox-wrapper">
+            <label>
+              <input type="checkbox" checked={isChecked} 
+              onChange={handleOnChange}
+              {...props}/>
+              
+              {label}
+            </label>
+         </div>
+        );
+      };
   let navigate = useNavigate();
   const submitHandler = (e) => {
     e.preventDefault();
     console.log("Type: "+searchtype)
-    navigate(`/searched/${input}&${searchtype}`);
+    navigate(`/searched/${input}&${searchtype}&${isChecked}`);
     console.log(e);
     
   };
+ 
 
   const handleClearBtn = () => {
     setInput('');
   }
 
-  /* return (
-    <FormStyle onSubmit={submitHandler}>
-      <div>
-        <FaSearch />
-        <input
-          type="text"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-        />
-        
-      
-  
-      </div>
-      
-      <Button text="Search" onClick={submitHandler} />  
-    </FormStyle>
-
-    
-  );
-*/
   return (
    
       <FormStyle onSubmit={submitHandler}>
@@ -71,18 +70,22 @@ function Search() {
           <button class="search-btn">
             <FaSearch onClick={submitHandler} /> 
           </button>
-        
         </div> 
+       
         <div> 
         <DropdownButton id="dropdown-basic-button" title={
         <span> {searchtype}</span>
     }>
+     
      <Dropdown.Item  onClick={() => setSearchtype("other")}>Other</Dropdown.Item>
      <Dropdown.Item  onClick={() => setSearchtype("bm25")}>BM25</Dropdown.Item>
      <Dropdown.Item  onClick={() => setSearchtype("tfidf")}>TFIDF</Dropdown.Item>
-   </DropdownButton> </div>
-        
+   </DropdownButton> </div> 
+  
+   
+   <Checkbox label="Expand Query?" />
     </FormStyle> 
+    
      
   )
 }
@@ -99,7 +102,7 @@ const FormStyle = styled.form`
     cursor: pointer;
   }
  
-  input {
+  input[type="text"] {
     border: 0;
     position: relative;
     background: transprent;
@@ -186,6 +189,27 @@ const FormStyle = styled.form`
       height: 24px;
     }
   }
+
+  input[type="checkbox"]{
+    width: 1.25em;
+    height: 1.25em;
+    vertical-align: text-bottom;
+    margin-right: 0.5em;
+  }
+  
+
+.checkbox-wrapper {
+  margin: 3px;
+  position: absolute;
+    top: 100%;
+    width: 50%;
+    align-items: center;
+    display: block; 
+  
+  color: white;
+}
+
+
 
   .search-btn {
     display:flex;

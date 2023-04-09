@@ -164,14 +164,16 @@ class RecipeSearch:
   def searchQueryResult(request):
     query = request.GET.get("query")
     search_type = request.GET.get("search_type")
-   
+    expand = request.GET.get("expand")
+    #print("expand: ",expand)
     #print ("search_type : ", search_type)
     #print ("Before expansion: ", query)
-
     ##########Query expansion########
     #start = time.time()
-    # if (search_type != "other"):
-      # query = expand_query(query)
+ 
+    if (search_type != "other" and expand == "true"):
+      query = expand_query(query)
+
     #print("Query Expansion Time: ", time.time() - start)
 
     #print ("After expansion: ", query)

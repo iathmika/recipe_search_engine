@@ -9,23 +9,29 @@ import Loader from "./components/Loader";
 import logo from "./images/favpng_cooking-cartoon.png";
 import Pages from "./components/Pages"
 import Category from "./components/Category"
+
 import "./index.css"
 import './App.css';
+import Button from "./components/Button";
 //import Advsearch from "./components/Advsearch"
 //import "./Advsearch.css"
 
 /* Add Recipe Search (Chef's Recipes) in a separate div */
 
 function App() {
+ 
   return (
     
       <Router >
         <LogoWrapper>
             <Logo to="/">
-              <img src={logo} alt="" width={100} height={100} />
+              <img src={logo} alt="" width={60} height={60} />
               Recipe Search 
+         
             </Logo>
+          
           </LogoWrapper>
+         
       <div className="app-wrap">
           
           <div class="app-content">
@@ -46,16 +52,17 @@ function App() {
 }
 
 const LogoWrapper = styled.div`
-  background: black;
+background: rgb(91, 44, 13);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 99;
-  padding: 1rem 0;
+  padding: 0rem 0;
   position: sticky;
   top: 0;
   left: 0;
   right: 0;
+  opacity: 80%;
 `
 
 const Logo = styled(Link)`
@@ -65,7 +72,7 @@ const Logo = styled(Link)`
   text-align: center;
   justify-content: center;
   align-items: center;
-  font-size: 2.5rem;
+  font-size: 1.8rem;
   font-weight: bold;
   font-family: "Ink Free", sans-serif;
   padding-left: 2rem;
@@ -105,42 +112,7 @@ const ThemeContext = React.createContext()
 // Main component -------------------------------
 //const Card = props => {
 
-function App() {
-  return (
-    <div className="App">
-      <Router>
-      <Nav>
-          <GiKnifeFork />
-        
-         </Nav>
-         <Search />
-         
-         
-      </Router>
-    </div>
-  );
-}
-function Main() {
-  
-  const getData = (page = 1, name = 'a') => {
-    setLoading(true);
-    
-    axios.get(`https://rickandmortyapi.com/api/character/?page=${page}&name=${encodeURIComponent(name)}`)
-    .then(response => {
-      console.clear()
-      console.log(response.data);
-      
-      setChar(response.data.results);
-      setTotalPage(response.data.info.pages)
-      setCurrentPage(page);
-      setLoading(false);
-    }, error => {
-      setChar([]);
-      setLoading(false);
-    })
-    
-  }
-  
+
   const [char, setChar] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
@@ -218,26 +190,6 @@ function Main() {
 }
 
 
-// Loader component -------------------------------
-
-
-// Search component -------------------------
-
-
-// Card component -------------------------------
-
-const Card = props => {
-  
-  const [showPop, setShowPop] = useState(false)
-  
-  const handleClick = () => {
-    if(showPop){
-      setShowPop(false);
-    }else{
-      setShowPop(true);
-    }
-    
-  }
   
   return (
     <div className='card' data-id={props.id}>

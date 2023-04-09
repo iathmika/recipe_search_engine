@@ -1,9 +1,13 @@
 import React from 'react';
 import "../index.css"
+import { useNavigate } from "react-router-dom";
+function Button({FAQ, onClick }) {
+    const navigate = useNavigate();
 
-function Button({ text, onClick }) {
-    return ( <button className="button" onClick={onClick}>
-    {text}</button>
+    function handleClick() {
+      navigate("/faqs");}
+    return ( <button className="button" onClick={handleClick}> FAQs
+    </button>
     );
 }
 
