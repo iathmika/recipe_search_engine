@@ -108,9 +108,9 @@ function Searched() {
   }
   else if (searchedRecipes == "#"){
     return (
-      <Display>
-        <h6>Loading...</h6> 
-      </Display>
+      <Loading>
+          Loading...
+      </Loading>
       );
   }
   else {
@@ -118,7 +118,7 @@ function Searched() {
     console.log("recipe.NER is "+ searchedRecipes.NER);
   return (
       <Display> 
-        <h6> Showing Search Results for "{query}" </h6>
+        <ShowResults>Showing Search Results for "{query}" </ShowResults> 
 
         <Grid>
 
@@ -165,13 +165,15 @@ align-items: center;
 h1{
   text-align: center;
 }
-h6{
-  color:  #7B5912;
-  text-align: center;
- 
-}
 
 `;
+const Loading = styled.div`
+
+text-align: center;
+color:  #7B5912;
+font-size: 20px;
+margin-top: 10px;
+`
 
 const NoResults = styled.div`
 
@@ -179,6 +181,14 @@ text-align: center;
 color:  #7B5912;
 font-size: 25px;
 margin-top: 100px;
+`
+
+const ShowResults = styled.div`
+
+text-align: center;
+color:  #7B5912;
+font-size: 20px;
+margin-top: 10px;
 `
 
 const Grid = styled.div`
@@ -202,6 +212,7 @@ a{
 // `
 
 const Card = styled.div`
+
   img {
     width: 100%;
     border-radius: 1rem;
