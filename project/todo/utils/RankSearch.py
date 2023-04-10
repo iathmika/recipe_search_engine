@@ -48,7 +48,7 @@ def processRankedQuery(query, indexObj, search_type):
           #print (f"Iterating sub loop , Term {term} : time : {time.time() - start}")
   if len(rsl) > 0:
     #start = time.time() 
-    sorted_dict = dict(sorted(rsl.items(), key=lambda item: item[1]))
+    sorted_dict = dict(sorted(rsl.items(), key=lambda item: item[1], reverse= True))
     #print (f"Sorting time : {time.time() - start}")
     return sorted_dict
 

@@ -39,7 +39,7 @@ function Recommendations(props) {
       //fetch the data
       id = id.replace(/\D/g,'');
       console.log(id);
-      const response = await fetch(`http://localhost:8000/recommendations/?recipe_id=${id}`);
+      const response = await fetch(`http://34.168.247.161:8000/recommendations/?recipe_id=${id}`);
       //store the data
       const responseData = await response.json();
       setData(responseData.results);
@@ -76,7 +76,7 @@ function NutritionCalculator(props){
       console.log("NER is ");
       console.log(NER);
       NER = NER.replace(/\'/g,'');
-      const data = await fetch(`http://localhost:8000/nutrition/?ingredient=${NER}`);
+      const data = await fetch(`http://34.168.247.161:8000/nutrition/?ingredient=${NER}`);
       const nutrition_vals = await data.json();     
       console.log("Nutrition : ",nutrition_vals);
       console.log("nutrition results length ",nutrition_vals.results);

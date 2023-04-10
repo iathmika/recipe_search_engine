@@ -21,7 +21,7 @@ start = time.time()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 app_path = Path(__file__).resolve().parent.parent
 print(" app_path name : ", app_path)
-index_file_path = os.path.join(app_path, 'sample_index.json')
+index_file_path = os.path.join(app_path, 'index.json')
 print(" index file path: ", index_file_path)
 trec_file_path = os.path.join(app_path, 'trec.5000.xml')
 stop_words_file = os.path.join(app_path, 'englishST.txt')

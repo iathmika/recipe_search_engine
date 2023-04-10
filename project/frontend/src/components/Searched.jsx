@@ -33,7 +33,7 @@ function Searched() {
     setQuery(name);
     const type = params[1];
     const ischecked = params[2];
-    const data = await fetch(`http://localhost:8000/search/?query=${name}&search_type=${type}&expand=${ischecked}`);
+    const data = await fetch(`http://34.168.247.161:8000/search/?query=${name}&search_type=${type}&expand=${ischecked}`);
     
     const recipes = await data.json();
 
