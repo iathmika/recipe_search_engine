@@ -195,17 +195,21 @@ const FormStyle = styled.form`
     height: 1.25em;
     vertical-align: text-bottom;
     margin-right: 0.5em;
+    align-items: center;
+
+    border-style: solid;
+    border-color: white;
   }
   
 
 .checkbox-wrapper {
   margin: 3px;
   position: absolute;
-    top: 100%;
-    width: 50%;
-    align-items: center;
+  top: 100%;
+  align-items: center;
     display: block; 
-  
+    border-style: solid white;
+
   color: white;
 }
 

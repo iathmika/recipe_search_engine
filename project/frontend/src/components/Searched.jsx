@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 // import ReactPaginate from 'react-paginate';
 
 function Searched() {
-  const [searchedRecipes, setSearchedRecipes] = useState([]);
+  const [searchedRecipes, setSearchedRecipes] = useState("#");
   let params = useParams();
   const [flips, setFlips] = useState([]);
   const [recipeCardClick, setRecipeCardClick] = useState(false);
@@ -40,11 +40,10 @@ function Searched() {
     console.log("Recipes:", recipes)
     
     console.log("recipes : ",recipes);
-    // console.log("recipes length: ",recipes.results);
-
-    
+    // console.log("recipes length: ",recipes.results);    
     setSearchedRecipes(recipes.results);
-    setFlips(getFlipInitialState(recipes.results.length));
+    setFlips(getFlipInitialState(recipes.results.length)); 
+   
   }; 
 
   
@@ -99,17 +98,27 @@ function Searched() {
   
     
 
-  if(searchedRecipes == null){
+  if(searchedRecipes == null || searchedRecipes == undefined || searchedRecipes.length == 0){
     // console.log("Hello!!!!!!!!!!");
     return (
-    <h1> </h1> 
+      <NoResults>
+          No Results Found! 
+      </NoResults>
     );
   }
+  else if (searchedRecipes == "#"){
+    return (
+      <Display>
+        <h6>Loading...</h6> 
+      </Display>
+      );
+  }
   else {
+    console.log("searchedRecipes is : ",searchedRecipes)
     console.log("recipe.NER is "+ searchedRecipes.NER);
   return (
       <Display> 
-        <h1> Showing Search Results for "{query}" </h1>
+        <h6> Showing Search Results for "{query}" </h6>
 
         <Grid>
 
@@ -156,7 +165,21 @@ align-items: center;
 h1{
   text-align: center;
 }
+h6{
+  color:  #7B5912;
+  text-align: center;
+ 
+}
+
 `;
+
+const NoResults = styled.div`
+
+text-align: center;
+color:  #7B5912;
+font-size: 25px;
+margin-top: 100px;
+`
 
 const Grid = styled.div`
   display: grid;

@@ -24,7 +24,7 @@ function App() {
     
       <Router >
         <LogoWrapper>
-            <Logo to="/">
+            <Logo>
               <img src={logo} alt="" width={60} height={60} />
               Recipe Search 
          
@@ -65,7 +65,7 @@ background: rgb(91, 44, 13);
   opacity: 80%;
 `
 
-const Logo = styled(Link)`
+const Logo = styled.div`
   position: relative; 
   display: flex;
   text-decoration: none;
