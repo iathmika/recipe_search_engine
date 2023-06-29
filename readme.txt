@@ -16,13 +16,17 @@ Sugarless Apple Pie, French Bread Pizza.
 You need to select “other” from the drop-down next to the search button.
 Examples: Honey AND Chilli AND Potato, cheese AND sugar AND NOT milk, Banana
 AND apples AND orange AND kiwi, cheese AND sugar AND milk.
+
 4. Phrase Search
 You need to select “other” from the drop-down next to the search button.
 "hot milk" AND sugar, "hot milk" AND sugar AND NOT flour, “ground cinnamon"
+
 5. TFIDF/BM25 can be selected for free search as retrieval models, by default TFIDF is the
 default retrieval model.
+
 6. Expand Query:
 You need to tick-mark the “Expand Query” option under the search box.
+
 7. Nutrition Calculator
 Nutrition values for all the ingredients in the recipe are shown in the table.
 
