@@ -1,25 +1,32 @@
-git init: Initialize a new local Git repository.
+# TTDS Project - Recipe Search Engine
 
-git status: Check the status of the current repository, including which files have been modified, added, or deleted.
+### Supported Features
 
-git add <file>: Add a file to the staging area. You can also use git add . to add all files in the current directory.
+1. Free text search
+Examples: I want salads with fruits like orange, strawberry and apple
+I want recipes similar to apple pies.
+Indian cuisine recipes.
 
-git commit -m "message": Commit the files in the staging area with a message describing the changes.
+2. Recommendations are not shown for all the recipes but sharing a few examples where
+recommendations will be shown.
+Examples: Festive Fruit Salad, Hawaiian Baked Beans And Franks, BarbaraS
+Sugarless Apple Pie, French Bread Pizza.
 
-git log: View the commit history for the repository.
+3. Boolean Search supported with multiple operators “AND, OR and NOT”
+You need to select “other” from the drop-down next to the search button.
+Examples: Honey AND Chilli AND Potato, cheese AND sugar AND NOT milk, Banana
+AND apples AND orange AND kiwi, cheese AND sugar AND milk.
+4. Phrase Search
+You need to select “other” from the drop-down next to the search button.
+"hot milk" AND sugar, "hot milk" AND sugar AND NOT flour, “ground cinnamon"
+5. TFIDF/BM25 can be selected for free search as retrieval models, by default TFIDF is the
+default retrieval model.
+6. Expand Query:
+You need to tick-mark the “Expand Query” option under the search box.
+7. Nutrition Calculator
+Nutrition values for all the ingredients in the recipe are shown in the table.
 
-git diff: View the differences between the current working directory and the last committed version.
+### Known Issues:
+1. A lot of recipes have the same title but the ingredients are different for those recipes.
+2. Since out of a 2.2 million recipes dataset, we trained our clustering model only on 18,000 recipes so recommended recipes fields for most of the searched recipes will be empty.
 
-git checkout <file>: Discard changes to a file.
-
-git branch: View the branches in the repository.
-
-git branch <name>: Create a new branch with the given name.
-
-git checkout <branch>: Switch to the specified branch.
-
-git merge <branch>: Merge the specified branch into the current branch.
-
-git pull: Fetch and merge changes from a remote repository.
-
-git push: Push local commits to a remote repository.
